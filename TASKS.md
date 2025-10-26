@@ -128,21 +128,35 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\## 3.2 Heuristics library (client-side)
+## 3.2 Heuristics library (client-side)
 
 
 
-\* \[ ] ⬜ Implement positive keyword list (education-related).
 
-\* \[ ] ⬜ Implement negative keyword list (clickbait / entertainment).
 
-\* \[ ] ⬜ Implement duration heuristics (short vs long).
 
-\* \[ ] ⬜ Implement whitelist/blacklist check (reads from `chrome.storage.local`).
 
-\* \[ ] ⬜ Implement decision structure: `decisive` vs `undecided`.
+* [x] ✅ Implement positive keyword list (education-related).
 
-\* AC: Heuristics produce `decision` with reason and confidence-like score; unit tests for keywords/duration.
+
+
+* [x] ✅ Implement negative keyword list (clickbait / entertainment).
+
+
+
+* [x] ✅ Implement duration heuristics (short vs long).
+
+
+
+* [x] ✅ Implement whitelist/blacklist check (reads from `chrome.storage.local`).
+
+
+
+* [x] ✅ Implement decision structure: `decisive` vs `undecided`.
+
+
+
+* AC: Heuristics produce `decision` with reason and confidence-like score; unit tests for keywords/duration.
 
 
 
