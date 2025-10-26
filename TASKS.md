@@ -264,17 +264,39 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 
 
-## 6.2 Gemini integration
+Gemini integration
 
 
 
-* [ ] ⬜ Implement prompt builder for `gemini-2.5-flash-lite` per Prompt Template.
 
-* [ ] ⬜ Implement API call and parse response (strict JSON parsing).
 
-* [ ] ⬜ Validate response fields (`label`, `confidence`, `reason`) and clamp confidence 0..1.
 
-* [ ] ⬜ Truncate/limit input text to token/char limits before calling model.
+
+[x] ⬜ Implement prompt builder for gemini-2.5-flash-lite per Prompt Template.
+
+
+
+
+
+
+
+[x] ⬜ Implement API call and parse response (strict JSON parsing).
+
+
+
+
+
+
+
+[x] ⬜ Validate response fields (label, confidence, reason) and clamp confidence 0..1.
+
+
+
+
+
+
+
+[x] ⬜ Truncate/limit input text to token/char limits before calling model.
 
 * AC: For a test payload, server returns structured JSON matching the contract.
 

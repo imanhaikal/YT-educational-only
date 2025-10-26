@@ -1,4 +1,5 @@
 const express = require('express');
+const { buildPrompt, callGemini } = require('./src/gemini');
 const app = express();
 const port = 3000;
 
@@ -25,8 +26,10 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
-app.post('/v1/classify', (req, res) => {
-  res.json({ message: 'Classification request received' });
+app.post('/v1/classify', async (req, res) => {
+  const prompt = buildPrompt(req.body);
+  const result = await callGemini(prompt);
+  res.json(result);
 });
 
 app.listen(port, () => {
