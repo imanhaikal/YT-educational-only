@@ -32,11 +32,11 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ Create Git repositories: `extension/` and `backend/`. (owner: )
+\* \[x] ✅ Create Git repositories: `extension/` and `backend/`. (owner: )
 
-\* \[ ] ⬜ Add README.md with quick start for each repo.
+\* \[x] ✅ Add README.md with quick start for each repo.
 
-\* \[ ] ⬜ Add `.gitignore`, `LICENSE`, and basic contributing guidelines.
+\* \[x] ✅ Add `.gitignore`, `LICENSE`, and basic contributing guidelines.
 
 \* \[ ] ⬜ Configure CI (GitHub Actions or equivalent) to run:
 
