@@ -212,13 +212,13 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ Toggle on/off
+\* \[x] ✅ Toggle on/off
 
-\* \[ ] ⬜ Strictness controls (lenient/medium/strict)
+\* \[x] ✅ Strictness controls (lenient/medium/strict)
 
-\* \[ ] ⬜ Quick whitelist/blacklist buttons for active tab
+\* \[x] ✅ Quick whitelist/blacklist buttons for active tab
 
-\* \[ ] ⬜ Display count of hidden videos on current page (message from content script)
+\* \[x] ✅ Display count of hidden videos on current page (message from content script)
 
 \* AC: Popup toggles settings and reflection of active page count works.
 

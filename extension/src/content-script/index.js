@@ -93,6 +93,8 @@ const VIDEO_SELECTORS = [
   'ytd-compact-video-renderer', // Playlists
 ];
 
+let hiddenVideoCount = 0;
+
 /**
  * Processes the video cards found on the page.
  */
@@ -112,6 +114,8 @@ const processVideos = () => {
           if (response && response.classification !== 'educational') {
             console.log(`Hiding video ${metadata.videoId} classified as ${response.classification}`);
             hideVideo(element);
+            hiddenVideoCount++;
+            chrome.runtime.sendMessage({ type: 'hidden_video_count', count: hiddenVideoCount });
           }
         }
       );
@@ -126,6 +130,12 @@ const observer = new MutationObserver(debounce(processVideos, 300));
 observer.observe(document.body, {
   childList: true,
   subtree: true,
+});
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'get_hidden_video_count') {
+    sendResponse({ count: hiddenVideoCount });
+  }
 });
 
 // Initial run on page load

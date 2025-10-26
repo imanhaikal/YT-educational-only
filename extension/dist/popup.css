@@ -1,3 +1,32 @@
 body {
-  width: 200px;
+  font-family: sans-serif;
+  width: 300px;
+  padding: 10px;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+h1 {
+  font-size: 18px;
+  margin: 0;
+  text-align: center;
+}
+
+.setting {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  justify-content: space-around;
+}
+
+.info {
+  text-align: center;
 }
