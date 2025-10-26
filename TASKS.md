@@ -48,9 +48,9 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 &nbsp; \* \[x] build step for extension bundle
 
-\* \[ ] ⬜ Add issue/PR templates (bug, feature, chore).
+\* \[x] ⬜ Add issue/PR templates (bug, feature, chore).
 
-\* \[ ] ⬜ Create `env.example` for backend (no secrets).
+\* \[x] ⬜ Create `env.example` for backend (no secrets).
 
 \* AC: Repos exist, CI runs on PRs, and README contains local dev start instructions.
 
