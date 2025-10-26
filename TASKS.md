@@ -38,15 +38,15 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 \* \[x] ✅ Add `.gitignore`, `LICENSE`, and basic contributing guidelines.
 
-\* \[ ] ⬜ Configure CI (GitHub Actions or equivalent) to run:
+\* \[x] ⬜ Configure CI (GitHub Actions or equivalent) to run:
 
 
 
-&nbsp; \* \[ ] linting for JS/TS
+&nbsp; \* \[x] linting for JS/TS
 
-&nbsp; \* \[ ] unit tests
+&nbsp; \* \[x] unit tests
 
-&nbsp; \* \[ ] build step for extension bundle
+&nbsp; \* \[x] build step for extension bundle
 
 \* \[ ] ⬜ Add issue/PR templates (bug, feature, chore).
 

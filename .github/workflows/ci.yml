@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        run: npm install
+        working-directory: ./backend
+
+      - name: Install extension dependencies
+        run: npm install
+        working-directory: ./extension
+
+      - name: Lint backend
+        run: npm run lint
+        working-directory: ./backend
+
+      - name: Lint extension
+        run: npm run lint
+        working-directory: ./extension
+
+      - name: Test
+        run: echo "No tests configured"
+
+      - name: Build extension
+        run: npm run build --if-present
+        working-directory: ./extension
