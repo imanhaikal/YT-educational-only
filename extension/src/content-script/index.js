@@ -108,14 +108,26 @@ const processVideos = () => {
 
     const metadata = extractVideoMetadata(element);
     if (metadata && metadata.videoId) {
+      // Store videoId on the element for later retrieval
+      element.dataset.videoId = metadata.videoId;
       chrome.runtime.sendMessage(
         { type: 'CLASSIFY_VIDEO', videoId: metadata.videoId },
         (response) => {
-          if (response && response.classification !== 'educational') {
-            console.log(`Hiding video ${metadata.videoId} classified as ${response.classification}`);
-            hideVideo(element);
-            hiddenVideoCount++;
-            chrome.runtime.sendMessage({ type: 'hidden_video_count', count: hiddenVideoCount });
+          if (chrome.runtime.lastError) {
+            console.error('Error sending message:', chrome.runtime.lastError.message);
+            return;
+          }
+          if (response && response.classification) {
+            // This handles immediate responses from cache
+            if (response.classification !== 'educational') {
+              console.log(`Hiding video ${metadata.videoId} classified as ${response.classification}`);
+              hideVideo(element);
+              hiddenVideoCount++;
+              chrome.runtime.sendMessage({ type: 'hidden_video_count', count: hiddenVideoCount });
+            }
+          } else if (response && response.status === 'queued') {
+            // Video is queued for batch processing, do nothing for now
+            console.log(`Video ${metadata.videoId} is queued for classification.`);
           }
         }
       );
@@ -135,6 +147,23 @@ observer.observe(document.body, {
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'get_hidden_video_count') {
     sendResponse({ count: hiddenVideoCount });
+  } else if (request.type === 'CLASSIFICATION_RESULT') {
+    const { classifications } = request;
+    if (classifications) {
+      for (const videoId in classifications) {
+        const classification = classifications[videoId];
+        if (classification !== 'educational') {
+          const videoElement = document.querySelector(`[data-video-id="${videoId}"]`);
+          if (videoElement && !videoElement.dataset.hidden) {
+            console.log(`Hiding video ${videoId} classified as ${classification}`);
+            hideVideo(videoElement);
+            videoElement.dataset.hidden = true; // Mark as hidden to avoid recounting
+            hiddenVideoCount++;
+          }
+        }
+      }
+      chrome.runtime.sendMessage({ type: 'hidden_video_count', count: hiddenVideoCount });
+    }
   }
 });
 

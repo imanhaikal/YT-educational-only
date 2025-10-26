@@ -26,11 +26,11 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-async function classifyVideo(videoId) {
+async function classifyVideos(videoIds) {
     const { installationId, lastBackendFailTs } = await new Promise(resolve => chrome.storage.local.get(['installationId', 'lastBackendFailTs'], resolve));
 
     if (lastBackendFailTs && (Date.now() - lastBackendFailTs < BACKOFF_DURATION)) {
-        const message = `Backend is in backoff period. Skipping classification for videoId: ${videoId}`;
+        const message = `Backend is in backoff period. Skipping classification for ${videoIds.length} videos.`;
         console.log(message);
         addAuditLog(message);
         return null;
@@ -42,30 +42,79 @@ async function classifyVideo(videoId) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ videoId, installationId }),
+            body: JSON.stringify({ videoIds, installationId }),
         });
 
         if (!response.ok) {
             throw new Error(`Backend request failed with status: ${response.status}`);
         }
 
-        // If successful, clear the backoff timestamp
         await new Promise(resolve => chrome.storage.local.remove('lastBackendFailTs', resolve));
 
         const data = await response.json();
-        const message = `Successfully classified video ${videoId} as ${data.classification}`;
+        const message = `Successfully classified ${videoIds.length} videos.`;
         console.log(message);
         addAuditLog(message);
-        return data.classification;
+        return data.classifications;
     } catch (error) {
-        console.error('Error classifying video:', error);
-        const message = `Failed to classify video ${videoId}. Error: ${error.message}`;
+        console.error('Error classifying videos:', error);
+        const message = `Failed to classify videos. Error: ${error.message}`;
         addAuditLog(message);
-        // If failed, set the backoff timestamp
         await new Promise(resolve => chrome.storage.local.set({ lastBackendFailTs: Date.now() }, resolve));
-        return null; // or some default/error state
+        return null;
     }
 }
+
+chrome.alarms.onAlarm.addListener(async (alarm) => {
+    if (alarm.name === 'process-video-queue') {
+        const videosToProcess = Array.from(videoQueue);
+        videoQueue.clear();
+
+        if (videosToProcess.length === 0) {
+            addAuditLog('Alarm triggered, but video queue was empty.');
+            return;
+        }
+
+        addAuditLog(`Processing queue with ${videosToProcess.length} videos.`);
+        const classifications = await classifyVideos(videosToProcess);
+
+        if (classifications) {
+            const allItems = await new Promise(resolve => chrome.storage.local.get(null, resolve));
+            const cacheKeys = Object.keys(allItems).filter(k => k.startsWith('video-classification-'));
+            let newCacheEntries = {};
+
+            for (const videoId in classifications) {
+                const classification = classifications[videoId];
+                const cacheKey = `video-classification-${videoId}`;
+                newCacheEntries[cacheKey] = { classification, timestamp: Date.now() };
+            }
+
+            if (cacheKeys.length + Object.keys(newCacheEntries).length > MAX_CACHE_ENTRIES) {
+                // Simple eviction: remove oldest entries. A more sophisticated LRU would be better.
+                let sortedCache = cacheKeys.map(key => ({ key, timestamp: allItems[key].timestamp })).sort((a, b) => a.timestamp - b.timestamp);
+                const numToRemove = Math.max(0, cacheKeys.length + Object.keys(newCacheEntries).length - MAX_CACHE_ENTRIES);
+                const keysToRemove = sortedCache.slice(0, numToRemove).map(item => item.key);
+                if (keysToRemove.length > 0) {
+                    await new Promise(resolve => chrome.storage.local.remove(keysToRemove, resolve));
+                    addAuditLog(`Pruned ${keysToRemove.length} old cache entries.`);
+                }
+            }
+
+            await new Promise(resolve => chrome.storage.local.set(newCacheEntries, resolve));
+            addAuditLog(`Cached ${Object.keys(newCacheEntries).length} new classifications.`);
+
+            // Notify content scripts about the new classifications
+            chrome.tabs.query({ url: "*://www.youtube.com/*" }, (tabs) => {
+                tabs.forEach(tab => {
+                    chrome.tabs.sendMessage(tab.id, { type: 'CLASSIFICATION_RESULT', classifications });
+                });
+            });
+        }
+    }
+});
+
+let videoQueue = new Set();
+const BATCH_DELAY_MINUTES = 10 / 60; // 10 seconds
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'CLASSIFY_VIDEO') {
@@ -83,35 +132,19 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 return;
             }
 
-            console.log('No valid cache entry for videoId:', videoId);
-            const classification = await classifyVideo(videoId);
-
-            if (classification) {
-                const newItem = { classification, timestamp: Date.now() };
-                const allItems = await new Promise(resolve => chrome.storage.local.get(null, resolve));
-                const cacheKeys = Object.keys(allItems).filter(k => k.startsWith('video-classification-'));
-
-                if (cacheKeys.length >= MAX_CACHE_ENTRIES) {
-                    let oldestKey = null;
-                    let oldestTimestamp = Date.now();
-                    for (const key of cacheKeys) {
-                        if (allItems[key] && allItems[key].timestamp < oldestTimestamp) {
-                            oldestTimestamp = allItems[key].timestamp;
-                            oldestKey = key;
-                        }
-                    }
-                    if (oldestKey) {
-                        await new Promise(resolve => chrome.storage.local.remove(oldestKey, resolve));
-                        console.log('Pruned oldest cache entry:', oldestKey);
-                    }
+            console.log('No valid cache entry for videoId, adding to queue:', videoId);
+            videoQueue.add(videoId);
+            // Ensure the alarm is set. If it already exists, this does nothing.
+            chrome.alarms.get('process-video-queue', (alarm) => {
+                if (!alarm) {
+                    chrome.alarms.create('process-video-queue', { delayInMinutes: BATCH_DELAY_MINUTES });
+                    addAuditLog(`Alarm "process-video-queue" created with a ${BATCH_DELAY_MINUTES * 60}s delay.`);
                 }
-                await new Promise(resolve => chrome.storage.local.set({
-                    [cacheKey]: newItem
-                }, resolve));
-                console.log('Cached new classification for videoId:', videoId);
-            }
+            });
 
-            sendResponse({ classification });
+            // We will respond asynchronously later after batch processing
+            // For now, we can send a response indicating it's queued.
+            sendResponse({ status: 'queued' });
         })();
 
         return true;

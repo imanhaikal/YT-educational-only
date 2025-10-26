@@ -38,7 +38,7 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 * [x] ✅ Add `.gitignore`, `LICENSE`, and basic contributing guidelines.
 
-* [x] ⬜ Configure CI (GitHub Actions or equivalent) to run:
+* [x] ✅ Configure CI (GitHub Actions or equivalent) to run:
 
 
 
@@ -48,9 +48,9 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 &nbsp; * [x] build step for extension bundle
 
-* [x] ⬜ Add issue/PR templates (bug, feature, chore).
+* [x] ✅ Add issue/PR templates (bug, feature, chore).
 
-* [x] ⬜ Create `env.example` for backend (no secrets).
+* [x] ✅ Create `env.example` for backend (no secrets).
 
 * AC: Repos exist, CI runs on PRs, and README contains local dev start instructions.
 
@@ -68,7 +68,7 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 
 
-* [x] ⬜ Create `manifest.json` (Manifest V3) with minimal permissions:
+* [x] ✅ Create `manifest.json` (Manifest V3) with minimal permissions:
 
 
 
@@ -76,7 +76,7 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 &nbsp; * `permissions`: `storage`, `scripting`, `alarms`
 
-* [x] ⬜ Add build/bundle toolchain (esbuild/webpack/Vite) and npm scripts:
+* [x] ✅ Add build/bundle toolchain (esbuild/webpack/Vite) and npm scripts:
 
 
 
@@ -90,15 +90,15 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 
 
-* [x] ⬜ `src/content-script/` — content script entry
+* [x] ✅ `src/content-script/` — content script entry
 
-* [x] ⬜ `src/service-worker/` — background/service worker
+* [x] ✅ `src/service-worker/` — background/service worker
 
-* [x] ⬜ `src/popup/` — popup HTML + JS
+* [x] ✅ `src/popup/` — popup HTML + JS
 
-* [x] ⬜ `src/options/` — options UI
+* [x] ✅ `src/options/` — options UI
 
-* [x] ⬜ `src/styles/` — shared CSS (scoped classes)
+* [x] ✅ `src/styles/` — shared CSS (scoped classes)
 
 * AC: Files present, build produces `dist/` ready to load.
 
@@ -188,7 +188,7 @@ Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter
 
 * [x] ✅ Implement local cache logic using `chrome.storage.local` (TTL, max entries).
 
-* [ ] ⬜ Implement queueing/batching logic (optional for MVP — single request OK; batching recommended).
+* [x] ✅ Implement queueing/batching logic (optional for MVP — single request OK; batching recommended).
 
 * [x] ✅ Implement call to backend `POST /v1/classify` (with installationId).
 
