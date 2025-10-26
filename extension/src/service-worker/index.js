@@ -1,4 +1,4 @@
-const CACHE_TTL = 3600 * 1000; // 1 hour in milliseconds
+const CACHE_TTL = 24 * 3600 * 1000; // 24 hours in milliseconds
 const MAX_CACHE_ENTRIES = 100;
 const BACKEND_URL = 'http://localhost:3000/v1/classify';
 const BACKOFF_DURATION = 5 * 60 * 1000; // 5 minutes

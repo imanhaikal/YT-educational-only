@@ -344,13 +344,13 @@ Gemini integration
 
 
 
-* [ ] ] Implement cache TTL (default 24h).
+* [x] ✅ Implement cache TTL (default 24h).
 
-* [ ] ⬜ Implement cache eviction strategy (LRU or size cap).
+* [x] ✅ Implement cache eviction strategy (LRU or size cap).
 
 * [ ] ⬜ Decide batching plan: single vs batched requests; implement chosen approach.
 
-* [ ] ⬜ Implement storage of installationId (UUID generated at first install).
+* [x] ✅ Implement storage of installationId (UUID generated at first install).
 
 * AC: Cache hits are used and backend calls reduce when cache present.
 
