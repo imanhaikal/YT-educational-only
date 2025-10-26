@@ -1,26 +1,8 @@
-\# TASKS.md
+# TASKS.md
 
 
 
-Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filter (MVP)\*\*. Each section is organized as actionable checkboxes you can assign, track, and mark complete. I thought through dependencies and acceptance criteria so this can be used directly by engineers, QA, and product.
-
-
-
----
-
-
-
-\# 0. Legend \& conventions
-
-
-
-\* ✅ = done; ⬜ = todo
-
-\* `MUST` / `SHOULD` indicate priority.
-
-\* Where helpful, I include short acceptance criteria (AC) under each major task.
-
-\* Owner column is optional — fill it with team members or leave blank.
+Below is a detailed, prioritized checklist of tasks for the **YouTube Kid-Filter (MVP)**. Each section is organized as actionable checkboxes you can assign, track, and mark complete. I thought through dependencies and acceptance criteria so this can be used directly by engineers, QA, and product.
 
 
 
@@ -28,31 +10,17 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 1. Project setup (repo, CI, dependencies)
+# 0. Legend & conventions
 
 
 
-\* \[x] ✅ Create Git repositories: `extension/` and `backend/`. (owner: )
+* ✅ = done; ⬜ = todo
 
-\* \[x] ✅ Add README.md with quick start for each repo.
+* `MUST` / `SHOULD` indicate priority.
 
-\* \[x] ✅ Add `.gitignore`, `LICENSE`, and basic contributing guidelines.
+* Where helpful, I include short acceptance criteria (AC) under each major task.
 
-\* \[x] ⬜ Configure CI (GitHub Actions or equivalent) to run:
-
-
-
-&nbsp; \* \[x] linting for JS/TS
-
-&nbsp; \* \[x] unit tests
-
-&nbsp; \* \[x] build step for extension bundle
-
-\* \[x] ⬜ Add issue/PR templates (bug, feature, chore).
-
-\* \[x] ⬜ Create `env.example` for backend (no secrets).
-
-\* AC: Repos exist, CI runs on PRs, and README contains local dev start instructions.
+* Owner column is optional — fill it with team members or leave blank.
 
 
 
@@ -60,47 +28,31 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 2. Core extension scaffolding
+# 1. Project setup (repo, CI, dependencies)
 
 
 
-\## 2.1 Manifest \& build
+* [x] ✅ Create Git repositories: `extension/` and `backend/`. (owner: )
+
+* [x] ✅ Add README.md with quick start for each repo.
+
+* [x] ✅ Add `.gitignore`, `LICENSE`, and basic contributing guidelines.
+
+* [x] ⬜ Configure CI (GitHub Actions or equivalent) to run:
 
 
 
-\* \[x] ⬜ Create `manifest.json` (Manifest V3) with minimal permissions:
+&nbsp; * [x] linting for JS/TS
 
+&nbsp; * [x] unit tests
 
+&nbsp; * [x] build step for extension bundle
 
-&nbsp; \* `host\_permissions`: `https://www.youtube.com/\*`
+* [x] ⬜ Add issue/PR templates (bug, feature, chore).
 
-&nbsp; \* `permissions`: `storage`, `scripting`, `alarms`
+* [x] ⬜ Create `env.example` for backend (no secrets).
 
-\* \[x] ⬜ Add build/bundle toolchain (esbuild/webpack/Vite) and npm scripts:
-
-
-
-&nbsp; \* `build`, `dev`, `lint`, `test`
-
-\* AC: `chrome://extensions` can load unpacked extension after build.
-
-
-
-\## 2.2 Directory \& files
-
-
-
-\* \[x] ⬜ `src/content-script/` — content script entry
-
-\* \[x] ⬜ `src/service-worker/` — background/service worker
-
-\* \[x] ⬜ `src/popup/` — popup HTML + JS
-
-\* \[x] ⬜ `src/options/` — options UI
-
-\* \[x] ⬜ `src/styles/` — shared CSS (scoped classes)
-
-\* AC: Files present, build produces `dist/` ready to load.
+* AC: Repos exist, CI runs on PRs, and README contains local dev start instructions.
 
 
 
@@ -108,23 +60,71 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 3. Content script: scraping, heuristics, DOM changes
+# 2. Core extension scaffolding
 
 
 
-\## 3.1 DOM detection \& extraction
+## 2.1 Manifest & build
 
 
 
-\* \[x] ✅ Implement `MutationObserver` with debounce (200–400ms).
+* [x] ⬜ Create `manifest.json` (Manifest V3) with minimal permissions:
 
-\* \[x] ✅ Implement robust selectors for cards (`ytd-rich-item-renderer`, `ytd-video-renderer`, etc).
 
-\* \[x] ✅ Implement `extractVideoId(node)` util that handles `/watch?v=...` and shortened links.
 
-\* \[x] ✅ Extract metadata: `title`, `descriptionSnippet`, `channelName`, `channelId` (if available), `durationSec`.
+&nbsp; * `host_permissions`: `https://www.youtube.com/*`
 
-\* AC: On sample YouTube pages, `extractVideoId` returns correct IDs for >95% of visible cards.
+&nbsp; * `permissions`: `storage`, `scripting`, `alarms`
+
+* [x] ⬜ Add build/bundle toolchain (esbuild/webpack/Vite) and npm scripts:
+
+
+
+&nbsp; * `build`, `dev`, `lint`, `test`
+
+* AC: `chrome://extensions` can load unpacked extension after build.
+
+
+
+## 2.2 Directory & files
+
+
+
+* [x] ⬜ `src/content-script/` — content script entry
+
+* [x] ⬜ `src/service-worker/` — background/service worker
+
+* [x] ⬜ `src/popup/` — popup HTML + JS
+
+* [x] ⬜ `src/options/` — options UI
+
+* [x] ⬜ `src/styles/` — shared CSS (scoped classes)
+
+* AC: Files present, build produces `dist/` ready to load.
+
+
+
+---
+
+
+
+# 3. Content script: scraping, heuristics, DOM changes
+
+
+
+## 3.1 DOM detection & extraction
+
+
+
+* [x] ✅ Implement `MutationObserver` with debounce (200–400ms).
+
+* [x] ✅ Implement robust selectors for cards (`ytd-rich-item-renderer`, `ytd-video-renderer`, etc).
+
+* [x] ✅ Implement `extractVideoId(node)` util that handles `/watch?v=...` and shortened links.
+
+* [x] ✅ Extract metadata: `title`, `descriptionSnippet`, `channelName`, `channelId` (if available), `durationSec`.
+
+* AC: On sample YouTube pages, `extractVideoId` returns correct IDs for >95% of visible cards.
 
 
 
@@ -180,65 +180,23 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 4. Background service worker (extension)
+# 4. Background service worker (extension)
 
 
 
-\* \[x] ✅ Implement message listener for `CLASSIFY\_VIDEO`.
+* [x] ✅ Implement message listener for `CLASSIFY_VIDEO`.
 
-\* \[x] ✅ Implement local cache logic using `chrome.storage.local` (TTL, max entries).
+* [x] ✅ Implement local cache logic using `chrome.storage.local` (TTL, max entries).
 
-\* \[ ] ⬜ Implement queueing/batching logic (optional for MVP — single request OK; batching recommended).
+* [ ] ⬜ Implement queueing/batching logic (optional for MVP — single request OK; batching recommended).
 
-\* \[x] ✅ Implement call to backend `POST /v1/classify` (with installationId).
+* [x] ✅ Implement call to backend `POST /v1/classify` (with installationId).
 
-\* \[x] ✅ Implement backoff \& retry policy, and offline flag (`lastBackendFailTs`).
+* [x] ✅ Implement backoff & retry policy, and offline flag (`lastBackendFailTs`).
 
-\* \[x] ✅ Implement audit logging in storage (cap to 50 entries).
+* [x] ✅ Implement audit logging in storage (cap to 50 entries).
 
-\* AC: Service worker responds to content script messages and returns cached/remote/heuristic responses as expected.
-
-
-
----
-
-
-
-\# 5. Options \& Popup UIs
-
-
-
-\## 5.1 Popup
-
-
-
-\* \[x] ✅ Toggle on/off
-
-\* \[x] ✅ Strictness controls (lenient/medium/strict)
-
-\* \[x] ✅ Quick whitelist/blacklist buttons for active tab
-
-\* \[x] ✅ Display count of hidden videos on current page (message from content script)
-
-\* AC: Popup toggles settings and reflection of active page count works.
-
-
-
-\## 5.2 Options page
-
-
-
-\* \[x] ✅ Whitelist CRUD (add channel by ID/name, add video by URL)
-
-\* \[x] ✅ Blacklist CRUD
-
-\* \[x] ✅ Audit log view (last 50 entries, clear button)
-
-\* \[x] ✅ PIN set/change flow (store salted hash; display warning about strength)
-
-\* \[x] ✅ Telemetry opt-in toggle + Clear local data button
-
-\* AC: Options persist to `chrome.storage.local` and reflect in content behavior.
+* AC: Service worker responds to content script messages and returns cached/remote/heuristic responses as expected.
 
 
 
@@ -246,53 +204,41 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 6. Backend proxy service
+# 5. Options & Popup UIs
 
 
 
-\## 6.1 Basic server \& endpoint
+## 5.1 Popup
 
 
 
-\* \[ ] ⬜ Create `server/` repo scaffold (Node/Express or serverless function).
+* [x] ✅ Toggle on/off
 
-\* \[ ] ⬜ Implement `POST /v1/classify` endpoint accepting JSON array or single object.
+* [x] ✅ Strictness controls (lenient/medium/strict)
 
-\* \[ ] ⬜ Validate `Origin` header against allowed extension ID(s).
+* [x] ✅ Quick whitelist/blacklist buttons for active tab
 
-\* AC: Server responds 200 to valid requests and 401/403 to invalid origins.
+* [x] ✅ Display count of hidden videos on current page (message from content script)
 
-
-
-\## 6.2 Gemini integration
+* AC: Popup toggles settings and reflection of active page count works.
 
 
 
-\* \[ ] ⬜ Implement prompt builder for `gemini-2.5-flash-lite` per Prompt Template.
-
-\* \[ ] ⬜ Implement API call and parse response (strict JSON parsing).
-
-\* \[ ] ⬜ Validate response fields (`label`, `confidence`, `reason`) and clamp confidence 0..1.
-
-\* \[ ] ⬜ Truncate/limit input text to token/char limits before calling model.
-
-\* AC: For a test payload, server returns structured JSON matching the contract.
+## 5.2 Options page
 
 
 
-\## 6.3 Security \& rate-limiting
+* [x] ✅ Whitelist CRUD (add channel by ID/name, add video by URL)
 
+* [x] ✅ Blacklist CRUD
 
+* [x] ✅ Audit log view (last 50 entries, clear button)
 
-\* \[ ] ⬜ Store GEMINI API key in environment (do not commit).
+* [x] ✅ PIN set/change flow (store salted hash; display warning about strength)
 
-\* \[ ] ⬜ Add basic rate limiting (per IP and per installation token).
+* [x] ✅ Telemetry opt-in toggle + Clear local data button
 
-\* \[ ] ⬜ Add request logging (aggregate only; don't log raw titles by default).
-
-\* \[ ] ⬜ Health endpoint and simple metrics endpoint (optional).
-
-\* AC: Rate-limiting blocks excessive requests; key not present in repo.
+* AC: Options persist to `chrome.storage.local` and reflect in content behavior.
 
 
 
@@ -300,59 +246,53 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 7. Model prompt \& contract QA
+# 6. Backend proxy service
 
 
 
-\* \[ ] ⬜ Prepare 10-20 test prompts with expected outputs to sanity check Gemini responses.
-
-\* \[ ] ⬜ Implement server-side JSON validator and fallbacks (malformed → `uncertain`).
-
-\* \[ ] ⬜ Add unit tests/mocks for backend response parsing.
-
-\* AC: Mocked model returns are parsed correctly and returned to extension.
+## 6.1 Basic server & endpoint
 
 
 
----
+* [x] ✅ Create `server/` repo scaffold (Node/Express or serverless function).
+
+* [x] ✅ Implement `POST /v1/classify` endpoint accepting JSON array or single object.
+
+* [x] ✅ Validate `Origin` header against allowed extension ID(s).
+
+* AC: Server responds 200 to valid requests and 401/403 to invalid origins.
 
 
 
-\# 8. Caching, batching \& quotas
+## 6.2 Gemini integration
 
 
 
-\* \[ ] ] Implement cache TTL (default 24h).
+* [ ] ⬜ Implement prompt builder for `gemini-2.5-flash-lite` per Prompt Template.
 
-\* \[ ] ⬜ Implement cache eviction strategy (LRU or size cap).
+* [ ] ⬜ Implement API call and parse response (strict JSON parsing).
 
-\* \[ ] ⬜ Decide batching plan: single vs batched requests; implement chosen approach.
+* [ ] ⬜ Validate response fields (`label`, `confidence`, `reason`) and clamp confidence 0..1.
 
-\* \[ ] ⬜ Implement storage of installationId (UUID generated at first install).
+* [ ] ⬜ Truncate/limit input text to token/char limits before calling model.
 
-\* AC: Cache hits are used and backend calls reduce when cache present.
-
-
-
----
+* AC: For a test payload, server returns structured JSON matching the contract.
 
 
 
-\# 9. Security \& privacy tasks
+## 6.3 Security & rate-limiting
 
 
 
-\* \[ ] ⬜ Ensure extension does not request extraneous permissions.
+* [ ] ⬜ Store GEMINI API key in environment (do not commit).
 
-\* \[ ] ⬜ Document exactly what is sent to backend in privacy policy draft.
+* [ ] ⬜ Add basic rate limiting (per IP and per installation token).
 
-\* \[ ] ⬜ Implement PIN storage as salted hash and client-side verification.
+* [ ] ⬜ Add request logging (aggregate only; don't log raw titles by default).
 
-\* \[ ] ⬜ Add option to clear all local data and instructions for data deletion.
+* [ ] ⬜ Health endpoint and simple metrics endpoint (optional).
 
-\* \[ ] ⬜ Backend: whitelist extension origin; require installation token if chosen.
-
-\* AC: Privacy policy drafted; PIN not stored in plaintext.
+* AC: Rate-limiting blocks excessive requests; key not present in repo.
 
 
 
@@ -360,49 +300,17 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 10. Testing \& QA
+# 7. Model prompt & contract QA
 
 
 
-\## 10.1 Unit tests
+* [ ] ⬜ Prepare 10-20 test prompts with expected outputs to sanity check Gemini responses.
 
+* [ ] ⬜ Implement server-side JSON validator and fallbacks (malformed → `uncertain`).
 
+* [ ] ⬜ Add unit tests/mocks for backend response parsing.
 
-\* \[ ] ⬜ Heuristics functions
-
-\* \[ ] ⬜ Video ID extraction
-
-\* \[ ] ⬜ Storage utils (read/write/cache TTL)
-
-\* \[ ] ⬜ Prompt builder \& server parsing logic
-
-\* AC: Unit test coverage for core utils >= targeted threshold (team-defined).
-
-
-
-\## 10.2 Integration tests
-
-
-
-\* \[ ] ⬜ Mock backend to verify end-to-end content script ↔ service worker ↔ backend flows.
-
-\* \[ ] ⬜ Puppeteer/Playwright tests to load YouTube pages and assert DOM modifications for test vectors.
-
-\* AC: E2E smoke tests pass for major flows (home, search, watch recs).
-
-
-
-\## 10.3 Manual test vectors \& acceptance
-
-
-
-\* \[ ] ⬜ Build curated CSV/JSON with ~200 test videos (see DESIGN.md vectors).
-
-\* \[ ] ⬜ Run manual acceptance tests under Lenient/Medium/Strict.
-
-\* \[ ] ⬜ Record false positives \& negatives and iterate heuristics/prompt.
-
-\* AC: False positive rate < 5% (target), false negative rate acceptable per product discussion.
+* AC: Mocked model returns are parsed correctly and returned to extension.
 
 
 
@@ -410,35 +318,19 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 11. UX polish \& accessibility
+# 8. Caching, batching & quotas
 
 
 
-\* \[ ] ⬜ Ensure placeholder and reveal buttons accessible (aria-labels, keyboard focus).
+* [ ] ] Implement cache TTL (default 24h).
 
-\* \[ ] ⬜ Add short “Why?” tooltip showing classifier reason and confidence.
+* [ ] ⬜ Implement cache eviction strategy (LRU or size cap).
 
-\* \[ ] ⬜ Ensure options/popup responsive and readable.
+* [ ] ⬜ Decide batching plan: single vs batched requests; implement chosen approach.
 
-\* AC: Basic accessibility checks pass (keyboard navigable, buttons have aria labels).
+* [ ] ⬜ Implement storage of installationId (UUID generated at first install).
 
-
-
----
-
-
-
-\# 12. Ops, monitoring \& observability (backend)
-
-
-
-\* \[ ] ⬜ Add basic logging/metrics (request count, 4xx/5xx, avg latency).
-
-\* \[ ] ⬜ Add alerting for high error rates.
-
-\* \[ ] ⬜ Prepare simple runbook for restarting backend \& rolling back.
-
-\* AC: Metrics visible in chosen monitoring tool and runbook created.
+* AC: Cache hits are used and backend calls reduce when cache present.
 
 
 
@@ -446,43 +338,21 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 13. Documentation \& legal
+# 9. Security & privacy tasks
 
 
 
-\* \[ ] ⬜ Write privacy policy describing text-only data sent to backend, storage, opt-in telemetry, and deletion instructions.
+* [ ] ⬜ Ensure extension does not request extraneous permissions.
 
-\* \[ ] ] Write developer README for extension and backend with setup, build, deploy steps.
+* [ ] ⬜ Document exactly what is sent to backend in privacy policy draft.
 
-\* \[ ] ⬜ Prepare Chrome Web Store listing copy (short + long descriptions) including privacy summary.
+* [ ] ⬜ Implement PIN storage as salted hash and client-side verification.
 
-\* \[ ] ⬜ Prepare FAQ for parents (how reveal/whitelist works, PIN).
+* [ ] ⬜ Add option to clear all local data and instructions for data deletion.
 
-\* AC: All docs ready for store submission.
+* [ ] ⬜ Backend: whitelist extension origin; require installation token if chosen.
 
-
-
----
-
-
-
-\# 14. Release \& store submission checklist
-
-
-
-\* \[ ] ⬜ Final QA pass with test vector
-
-\* \[ ] ⬜ Create extension icon assets and images for store
-
-\* \[ ] ⬜ Pack extension and produce `.zip` for Chrome Web Store
-
-\* \[ ] ⬜ Ensure privacy policy URL included in store listing
-
-\* \[ ] ⬜ Backend deployed to production with env vars set (`GEMINI\_API\_KEY`, allowed origins)
-
-\* \[ ] ⬜ Monitor initial rollout and be prepared to quick fix selector regressions
-
-\* AC: Extension published and backend live; monitoring in place.
+* AC: Privacy policy drafted; PIN not stored in plaintext.
 
 
 
@@ -490,19 +360,49 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 15. Post-release follow-ups (short backlog)
+# 10. Testing & QA
 
 
 
-\* \[ ] ⬜ Collect parental feedback UI to capture false positives/negatives.
+## 10.1 Unit tests
 
-\* \[ ] ⬜ Add optional on-device fallback classifier prototype.
 
-\* \[ ] ⬜ Implement improved batching to lower costs.
 
-\* \[ ] ⬜ Internationalization support (text labels + keywords).
+* [ ] ⬜ Heuristics functions
 
-\* AC: Backlog created with prioritization for next sprint.
+* [ ] ⬜ Video ID extraction
+
+* [ ] ⬜ Storage utils (read/write/cache TTL)
+
+* [ ] ⬜ Prompt builder & server parsing logic
+
+* AC: Unit test coverage for core utils >= targeted threshold (team-defined).
+
+
+
+## 10.2 Integration tests
+
+
+
+* [ ] ⬜ Mock backend to verify end-to-end content script ↔ service worker ↔ backend flows.
+
+* [ ] ⬜ Puppeteer/Playwright tests to load YouTube pages and assert DOM modifications for test vectors.
+
+* AC: E2E smoke tests pass for major flows (home, search, watch recs).
+
+
+
+## 10.3 Manual test vectors & acceptance
+
+
+
+* [ ] ⬜ Build curated CSV/JSON with ~200 test videos (see DESIGN.md vectors).
+
+* [ ] ⬜ Run manual acceptance tests under Lenient/Medium/Strict.
+
+* [ ] ⬜ Record false positives & negatives and iterate heuristics/prompt.
+
+* AC: False positive rate < 5% (target), false negative rate acceptable per product discussion.
 
 
 
@@ -510,23 +410,17 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 16. PR \& code review checklist (for each PR)
+# 11. UX polish & accessibility
 
 
 
-\* \[ ] ⬜ Branch named sensibly (e.g., `feat/content-scraper`)
+* [ ] ⬜ Ensure placeholder and reveal buttons accessible (aria-labels, keyboard focus).
 
-\* \[ ] ⬜ Tests added or existing tests updated
+* [ ] ⬜ Add short “Why?” tooltip showing classifier reason and confidence.
 
-\* \[ ] ⬜ Linting and build pass in CI
+* [ ] ⬜ Ensure options/popup responsive and readable.
 
-\* \[ ] ⬜ No secrets in code
-
-\* \[ ] ⬜ Short description and linked issue
-
-\* \[ ] ⬜ Reviewer checklist ticked
-
-\* AC: PR approved and merged only when all checks pass.
+* AC: Basic accessibility checks pass (keyboard navigable, buttons have aria labels).
 
 
 
@@ -534,21 +428,124 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\# 17. Acceptance criteria summary (for release)
+# 12. Ops, monitoring & observability (backend)
 
 
 
-\* \[ ] ⬜ Extension hides/collapses/blur non-educational videos on YouTube feeds and search with heuristics+model according to strictness.
+* [ ] ⬜ Add basic logging/metrics (request count, 4xx/5xx, avg latency).
 
-\* \[ ] ⬜ Whitelist/blacklist persist and override model decisions.
+* [ ] ⬜ Add alerting for high error rates.
 
-\* \[ ] ⬜ No API key in extension; backend proxies to Gemini.
+* [ ] ⬜ Prepare simple runbook for restarting backend & rolling back.
 
-\* \[ ] ⬜ Audit log present and functional locally.
-
-\* \[ ] ⬜ Telemetry off by default and opt-in only.
-
-\* \[ ] ⬜ Privacy policy published and store listing includes it.
+* AC: Metrics visible in chosen monitoring tool and runbook created.
 
 
 
+---
+
+
+
+# 13. Documentation & legal
+
+
+
+* [ ] ⬜ Write privacy policy describing text-only data sent to backend, storage, opt-in telemetry, and deletion instructions.
+
+* [ ] ] Write developer README for extension and backend with setup, build, deploy steps.
+
+* [ ] ⬜ Prepare Chrome Web Store listing copy (short + long descriptions) including privacy summary.
+
+* [ ] ⬜ Prepare FAQ for parents (how reveal/whitelist works, PIN).
+
+* AC: All docs ready for store submission.
+
+
+
+---
+
+
+
+# 14. Release & store submission checklist
+
+
+
+* [ ] ⬜ Final QA pass with test vector
+
+* [ ] ⬜ Create extension icon assets and images for store
+
+* [ ] ⬜ Pack extension and produce `.zip` for Chrome Web Store
+
+* [ ] ⬜ Ensure privacy policy URL included in store listing
+
+* [ ] ⬜ Backend deployed to production with env vars set (`GEMINI_API_KEY`, allowed origins)
+
+* [ ] ⬜ Monitor initial rollout and be prepared to quick fix selector regressions
+
+* AC: Extension published and backend live; monitoring in place.
+
+
+
+---
+
+
+
+# 15. Post-release follow-ups (short backlog)
+
+
+
+* [ ] ⬜ Collect parental feedback UI to capture false positives/negatives.
+
+* [ ] ⬜ Add optional on-device fallback classifier prototype.
+
+* [ ] ⬜ Implement improved batching to lower costs.
+
+* [ ] ⬜ Internationalization support (text labels + keywords).
+
+* AC: Backlog created with prioritization for next sprint.
+
+
+
+---
+
+
+
+# 16. PR & code review checklist (for each PR)
+
+
+
+* [ ] ⬜ Branch named sensibly (e.g., `feat/content-scraper`)
+
+* [ ] ⬜ Tests added or existing tests updated
+
+* [ ] ⬜ Linting and build pass in CI
+
+* [ ] ⬜ No secrets in code
+
+* [ ] ⬜ Short description and linked issue
+
+* [ ] ⬜ Reviewer checklist ticked
+
+* AC: PR approved and merged only when all checks pass.
+
+
+
+---
+
+
+
+# 17. Acceptance criteria summary (for release)
+
+
+
+* [ ] ⬜ Extension hides/collapses/blur non-educational videos on YouTube feeds and search with heuristics+model according to strictness.
+
+* [ ] ⬜ Whitelist/blacklist persist and override model decisions.
+
+* [ ] ⬜ No API key in extension; backend proxies to Gemini.
+
+* [ ] ⬜ Audit log present and functional locally.
+
+* [ ] ⬜ Telemetry off by default and opt-in only.
+
+* [ ] ⬜ Privacy policy published and store listing includes it.
