@@ -1,7 +1,7 @@
 require('dotenv').config();
 console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS);
 const express = require('express');
-const { buildPrompt, callGemini } = require('./src/gemini');
+const { classifyVideosInBatch } = require('./src/gemini');
 const app = express();
 const morgan = require('morgan');
 
@@ -46,9 +46,13 @@ app.get('/health', (req, res) => {
 });
 
 app.post('/v1/classify', async (req, res) => {
-  const prompt = buildPrompt(req.body);
-  const result = await callGemini(prompt);
-  res.json(result);
+  const { videos } = req.body;
+  if (!Array.isArray(videos)) {
+    return res.status(400).json({ message: 'Request body must be an array of video metadata objects.' });
+  }
+
+  const classifications = await classifyVideosInBatch(videos);
+  res.json({ classifications });
 });
 
 app.listen(port, () => {

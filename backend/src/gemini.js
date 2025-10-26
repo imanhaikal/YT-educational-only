@@ -135,4 +135,20 @@ const callGemini = async (prompt) => {
     }
 };
 
-module.exports = { buildPrompt, callGemini, validateResponse };
+const classifyVideosInBatch = async (videos) => {
+  const promises = videos.map(video => {
+    const prompt = buildPrompt(video);
+    return callGemini(prompt);
+  });
+
+  const results = await Promise.all(promises);
+
+  const classifications = videos.reduce((acc, video, index) => {
+    acc[video.videoId] = results[index];
+    return acc;
+  }, {});
+
+  return classifications;
+};
+
+module.exports = { buildPrompt, callGemini, validateResponse, classifyVideosInBatch };

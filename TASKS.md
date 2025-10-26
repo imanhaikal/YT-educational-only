@@ -348,7 +348,7 @@ Gemini integration
 
 * [x] ✅ Implement cache eviction strategy (LRU or size cap).
 
-* [ ] ⬜ Decide batching plan: single vs batched requests; implement chosen approach.
+* [x] ✅ Decide batching plan: single vs batched requests; implement chosen approach.
 
 * [x] ✅ Implement storage of installationId (UUID generated at first install).
 

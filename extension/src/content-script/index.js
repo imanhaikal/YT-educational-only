@@ -111,7 +111,7 @@ const processVideos = () => {
       // Store videoId on the element for later retrieval
       element.dataset.videoId = metadata.videoId;
       chrome.runtime.sendMessage(
-        { type: 'CLASSIFY_VIDEO', videoId: metadata.videoId },
+        { type: 'CLASSIFY_VIDEO', videoId: metadata.videoId, metadata },
         (response) => {
           if (chrome.runtime.lastError) {
             console.error('Error sending message:', chrome.runtime.lastError.message);

@@ -26,11 +26,11 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
-async function classifyVideos(videoIds) {
+async function classifyVideos(videos) {
     const { installationId, lastBackendFailTs } = await new Promise(resolve => chrome.storage.local.get(['installationId', 'lastBackendFailTs'], resolve));
 
     if (lastBackendFailTs && (Date.now() - lastBackendFailTs < BACKOFF_DURATION)) {
-        const message = `Backend is in backoff period. Skipping classification for ${videoIds.length} videos.`;
+        const message = `Backend is in backoff period. Skipping classification for ${videos.length} videos.`;
         console.log(message);
         addAuditLog(message);
         return null;
@@ -42,7 +42,7 @@ async function classifyVideos(videoIds) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ videoIds, installationId }),
+            body: JSON.stringify({ videos, installationId }),
         });
 
         if (!response.ok) {
@@ -52,7 +52,7 @@ async function classifyVideos(videoIds) {
         await new Promise(resolve => chrome.storage.local.remove('lastBackendFailTs', resolve));
 
         const data = await response.json();
-        const message = `Successfully classified ${videoIds.length} videos.`;
+        const message = `Successfully classified ${videos.length} videos.`;
         console.log(message);
         addAuditLog(message);
         return data.classifications;
@@ -67,7 +67,7 @@ async function classifyVideos(videoIds) {
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
     if (alarm.name === 'process-video-queue') {
-        const videosToProcess = Array.from(videoQueue);
+        const videosToProcess = Array.from(videoQueue.values());
         videoQueue.clear();
 
         if (videosToProcess.length === 0) {
@@ -106,19 +106,26 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
             // Notify content scripts about the new classifications
             chrome.tabs.query({ url: "*://www.youtube.com/*" }, (tabs) => {
                 tabs.forEach(tab => {
-                    chrome.tabs.sendMessage(tab.id, { type: 'CLASSIFICATION_RESULT', classifications });
+                    chrome.tabs.sendMessage(tab.id, { type: 'CLASSIFICATION_RESULT', classifications })
+                        .catch(error => {
+                            if (error.message.includes('Receiving end does not exist')) {
+                                console.log(`Content script in tab ${tab.id} not ready to receive message.`);
+                            } else {
+                                console.error(`Error sending message to tab ${tab.id}:`, error);
+                            }
+                        });
                 });
             });
         }
     }
 });
 
-let videoQueue = new Set();
+let videoQueue = new Map();
 const BATCH_DELAY_MINUTES = 10 / 60; // 10 seconds
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'CLASSIFY_VIDEO') {
-        const { videoId } = request;
+        const { videoId, metadata } = request;
         const cacheKey = `video-classification-${videoId}`;
 
         (async () => {
@@ -133,7 +140,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
 
             console.log('No valid cache entry for videoId, adding to queue:', videoId);
-            videoQueue.add(videoId);
+            videoQueue.set(videoId, metadata);
             // Ensure the alarm is set. If it already exists, this does nothing.
             chrome.alarms.get('process-video-queue', (alarm) => {
                 if (!alarm) {
@@ -148,5 +155,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         })();
 
         return true;
+    } else if (request.type === 'hidden_video_count') {
+        chrome.action.setBadgeText({ text: request.count.toString() });
     }
 });
