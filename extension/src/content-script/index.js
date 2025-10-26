@@ -105,9 +105,16 @@ const processVideos = () => {
     element.dataset.processed = true;
 
     const metadata = extractVideoMetadata(element);
-    if (metadata) {
-      console.log('Found video:', metadata);
-      hideVideo(element);
+    if (metadata && metadata.videoId) {
+      chrome.runtime.sendMessage(
+        { type: 'CLASSIFY_VIDEO', videoId: metadata.videoId },
+        (response) => {
+          if (response && response.classification !== 'educational') {
+            console.log(`Hiding video ${metadata.videoId} classified as ${response.classification}`);
+            hideVideo(element);
+          }
+        }
+      );
     }
   });
 };

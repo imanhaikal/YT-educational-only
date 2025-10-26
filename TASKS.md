@@ -184,17 +184,17 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ Implement message listener for `CLASSIFY\_VIDEO`.
+\* \[x] ✅ Implement message listener for `CLASSIFY\_VIDEO`.
 
-\* \[ ] ⬜ Implement local cache logic using `chrome.storage.local` (TTL, max entries).
+\* \[x] ✅ Implement local cache logic using `chrome.storage.local` (TTL, max entries).
 
 \* \[ ] ⬜ Implement queueing/batching logic (optional for MVP — single request OK; batching recommended).
 
-\* \[ ] ⬜ Implement call to backend `POST /v1/classify` (with installationId).
+\* \[x] ✅ Implement call to backend `POST /v1/classify` (with installationId).
 
-\* \[ ] ⬜ Implement backoff \& retry policy, and offline flag (`lastBackendFailTs`).
+\* \[x] ✅ Implement backoff \& retry policy, and offline flag (`lastBackendFailTs`).
 
-\* \[ ] ⬜ Implement audit logging in storage (cap to 50 entries).
+\* \[x] ✅ Implement audit logging in storage (cap to 50 entries).
 
 \* AC: Service worker responds to content script messages and returns cached/remote/heuristic responses as expected.
 
