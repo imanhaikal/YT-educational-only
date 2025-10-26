@@ -68,7 +68,7 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ Create `manifest.json` (Manifest V3) with minimal permissions:
+\* \[x] ⬜ Create `manifest.json` (Manifest V3) with minimal permissions:
 
 
 
@@ -76,7 +76,7 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 &nbsp; \* `permissions`: `storage`, `scripting`, `alarms`
 
-\* \[ ] ⬜ Add build/bundle toolchain (esbuild/webpack/Vite) and npm scripts:
+\* \[x] ⬜ Add build/bundle toolchain (esbuild/webpack/Vite) and npm scripts:
 
 
 
