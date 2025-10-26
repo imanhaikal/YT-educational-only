@@ -272,7 +272,7 @@ Gemini integration
 
 
 
-[x] ⬜ Implement prompt builder for gemini-2.5-flash-lite per Prompt Template.
+[x] ✅ Implement prompt builder for gemini-2.5-flash-lite per Prompt Template.
 
 
 
@@ -280,7 +280,7 @@ Gemini integration
 
 
 
-[x] ⬜ Implement API call and parse response (strict JSON parsing).
+[x] ✅ Implement API call and parse response (strict JSON parsing).
 
 
 
@@ -288,7 +288,7 @@ Gemini integration
 
 
 
-[x] ⬜ Validate response fields (label, confidence, reason) and clamp confidence 0..1.
+[x] ✅ Validate response fields (label, confidence, reason) and clamp confidence 0..1.
 
 
 
@@ -296,7 +296,7 @@ Gemini integration
 
 
 
-[x] ⬜ Truncate/limit input text to token/char limits before calling model.
+[x] ✅ Truncate/limit input text to token/char limits before calling model.
 
 * AC: For a test payload, server returns structured JSON matching the contract.
 
@@ -306,13 +306,13 @@ Gemini integration
 
 
 
-* [x] ⬜ Store GEMINI API key in environment (do not commit).
+* [x] ✅ Store GEMINI API key in environment (do not commit).
 
-* [x] ⬜ Add basic rate limiting (per IP and per installation token).
+* [x] ✅ Add basic rate limiting (per IP and per installation token).
 
-* [x] ⬜ Add request logging (aggregate only; don't log raw titles by default).
+* [x] ✅ Add request logging (aggregate only; don't log raw titles by default).
 
-* [x] ⬜ Health endpoint and simple metrics endpoint (optional).
+* [x] ✅ Health endpoint and simple metrics endpoint (optional).
 
 * AC: Rate-limiting blocks excessive requests; key not present in repo.
 
