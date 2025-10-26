@@ -1,3 +1,5 @@
+import { hideVideo } from './ui-transformations.js';
+
 /**
  * Extracts the YouTube video ID from a DOM node.
  * @param {HTMLElement} node The DOM node of the video card.
@@ -97,9 +99,15 @@ const VIDEO_SELECTORS = [
 const processVideos = () => {
   const videoElements = document.querySelectorAll(VIDEO_SELECTORS.join(', '));
   videoElements.forEach((element) => {
+    if (element.dataset.processed) {
+      return;
+    }
+    element.dataset.processed = true;
+
     const metadata = extractVideoMetadata(element);
     if (metadata) {
       console.log('Found video:', metadata);
+      hideVideo(element);
     }
   });
 };

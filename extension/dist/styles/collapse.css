@@ -1,0 +1,8 @@
+.collapsed-video {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-out;
+    border: none;
+    margin: 0;
+    padding: 0;
+}

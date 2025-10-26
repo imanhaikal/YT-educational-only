@@ -160,19 +160,19 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\## 3.3 UI transformations
+## 3.3 UI transformations
 
 
 
-\* \[ ] ⬜ Implement placeholder component (HTML/CSS) for `hide` action.
+* [x] 🟩 Implement placeholder component (HTML/CSS) for `hide` action.
 
-\* \[ ] ⬜ Implement `blur` action using CSS classes (no global style collisions).
+* [x] 🟩 Implement `blur` action using CSS classes (no global style collisions).
 
-\* \[ ] ⬜ Implement `collapse` option (prefer animation + minimal layout shift).
+* [x] 🟩 Implement `collapse` option (prefer animation + minimal layout shift).
 
-\* \[ ] ⬜ Add reveal flow: `Reveal` button, optionally guarded by PIN flow via message to options page / service worker.
+* [x] 🟩 Add reveal flow: `Reveal` button, optionally guarded by PIN flow via message to options page / service worker.
 
-\* AC: Placeholder appears and reveal flow works on click.
+* AC: Placeholder appears and reveal flow works on click.
 
 
 
