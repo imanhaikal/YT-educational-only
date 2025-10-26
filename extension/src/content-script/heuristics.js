@@ -398,8 +398,8 @@ const POSITIVE_KEYWORDS = [
   'kosovo', 'abkhazia', 'artsakh',
   'northern cyprus', 'somaliland',
   'south ossetia', 'transnistria',
-  'donetsk people's republic',
-  'luhansk people's republic',
+  'donetsk people\'s republic',
+  'luhansk people\'s republic',
   'republic of crimea', 'education',
   'educational', 'learn', 'teach',
   'study', 'school', 'college',
@@ -873,8 +873,8 @@ const POSITIVE_KEYWORDS = [
   'abkhazia', 'artsakh',
   'northern cyprus', 'somaliland',
   'south ossetia', 'transnistria',
-  'donetsk people's republic',
-  'luhansk people's republic',
+  'donetsk people\'s republic',
+  'luhansk people\'s republic',
   'republic of crimea',
 ];
 const NEGATIVE_KEYWORDS = [
@@ -1020,7 +1020,7 @@ const NEGATIVE_KEYWORDS = [
   'peter luts', 'markus schulz', 'ferry corsten',
   'paul van dyk', 'atb', 'dash berlin', 'above & beyond',
   'gareth emery', 'sander van doorn', 'cosmic gate',
-  'aly & fila', 'john o'callaghan', 'bryan kearney',
+  'aly & fila', 'john o\'callaghan', 'bryan kearney',
   'giuseppe ottaviani', 'solarstone', 'factor b',
   'craig connelly', 'ciaran mcauley', 'billy gillies',
   'sneijder', 'shugz', 'david rust', 'renegade system',
@@ -1056,10 +1056,10 @@ const NEGATIVE_KEYWORDS = [
   'black hole recordings', 'fsoe', 'vandit',
   'subculture', 'kearnage', 'damages',
   'regenerate', 'outburst', 'techburst',
-  'monster tunes', 'who's afraid of 138',
+  'monster tunes', 'who\'s afraid of 138',
   'a state of trance', 'asot',
   'global dj broadcast', 'gdjb',
-  'corsten's countdown', 'vonyc sessions',
+  'corsten\'s countdown', 'vonyc sessions',
   'group therapy', 'abgt',
   'future sound of egypt', 'fsoe',
   'uplifting', 'tech', 'psy', 'hard',
@@ -1144,7 +1144,7 @@ const NEGATIVE_KEYWORDS = [
   'gender reveal', 'birthday party',
   'surprise party', 'costume party',
   'halloween party', 'christmas party',
-  'new year's eve party', 'super bowl party',
+  'new year\'s eve party', 'super bowl party',
   'viewing party', 'watch party',
   'listening party', 'release party',
   'launch party', 'wrap party',
@@ -1324,11 +1324,6 @@ export const analyzeHeuristics = async (metadata) => {
   if (listDecision) {
     return listDecision;
   }
-  const decision = {
-    isDecisive: false,
-    reason: 'No heuristic matched',
-    confidence: 0.5,
-  };
 
   const durationDecision = getDurationHeuristics(durationSec);
   if (durationDecision) {

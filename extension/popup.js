@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Listen for messages from the content script
-  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  chrome.runtime.onMessage.addListener((request, _sender, _sendResponse) => {
     if (request.type === 'hidden_video_count') {
       hiddenCountSpan.textContent = request.count;
     }
