@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Kid-Filter",
+  "version": "1.0",
+  "description": "Filters out non-educational content on YouTube.",
+  "permissions": [
+    "storage",
+    "scripting",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://www.youtube.com/*"
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.youtube.com/*"],
+      "js": ["content-script.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

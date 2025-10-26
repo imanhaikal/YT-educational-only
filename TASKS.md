@@ -116,13 +116,13 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ Implement `MutationObserver` with debounce (200–400ms).
+\* \[x] ✅ Implement `MutationObserver` with debounce (200–400ms).
 
-\* \[ ] ⬜ Implement robust selectors for cards (`ytd-rich-item-renderer`, `ytd-video-renderer`, etc).
+\* \[x] ✅ Implement robust selectors for cards (`ytd-rich-item-renderer`, `ytd-video-renderer`, etc).
 
-\* \[ ] ⬜ Implement `extractVideoId(node)` util that handles `/watch?v=...` and shortened links.
+\* \[x] ✅ Implement `extractVideoId(node)` util that handles `/watch?v=...` and shortened links.
 
-\* \[ ] ⬜ Extract metadata: `title`, `descriptionSnippet`, `channelName`, `channelId` (if available), `durationSec`.
+\* \[x] ✅ Extract metadata: `title`, `descriptionSnippet`, `channelName`, `channelId` (if available), `durationSec`.
 
 \* AC: On sample YouTube pages, `extractVideoId` returns correct IDs for >95% of visible cards.
 

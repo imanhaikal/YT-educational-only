@@ -1,0 +1,117 @@
+/**
+ * Extracts the YouTube video ID from a DOM node.
+ * @param {HTMLElement} node The DOM node of the video card.
+ * @returns {string|null} The video ID or null if not found.
+ */
+const extractVideoId = (node) => {
+  const link = node.querySelector('a[href]');
+  if (!link) {
+    return null;
+  }
+
+  const href = link.getAttribute('href');
+  const url = new URL(href, window.location.origin);
+
+  if (url.pathname === '/watch') {
+    return url.searchParams.get('v');
+  }
+
+  if (url.hostname === 'youtu.be') {
+    return url.pathname.slice(1);
+  }
+
+  return null;
+};
+
+/**
+ * Extracts metadata from a video card element.
+ * @param {HTMLElement} videoElement The video card element.
+ * @returns {object|null} An object with the video metadata or null if the ID can't be extracted.
+ */
+const extractVideoMetadata = (videoElement) => {
+  const videoId = extractVideoId(videoElement);
+  if (!videoId) {
+    return null;
+  }
+
+  const title = videoElement.querySelector('#video-title')?.textContent.trim() || null;
+  const descriptionSnippet = videoElement.querySelector('#description-text')?.textContent.trim() || null;
+  const channelName = videoElement.querySelector('.ytd-channel-name a')?.textContent.trim() || null;
+  const channelLink = videoElement.querySelector('.ytd-channel-name a')?.href;
+  const channelId = channelLink ? new URL(channelLink).pathname.split('/').pop() : null;
+
+  const durationElement = videoElement.querySelector('.ytd-thumbnail-overlay-time-status-renderer');
+  const durationLabel = durationElement?.getAttribute('aria-label') || '';
+  const durationSec = durationLabel
+    .split(' ')
+    .reduce((total, part) => {
+      const value = parseInt(part, 10);
+      if (isNaN(value)) return total;
+      if (part.includes('hour')) {
+        total += value * 3600;
+      } else if (part.includes('minute')) {
+        total += value * 60;
+      } else if (part.includes('second')) {
+        total += value;
+      }
+      return total;
+    }, 0);
+
+  return {
+    videoId,
+    title,
+    descriptionSnippet,
+    channelName,
+    channelId,
+    durationSec,
+  };
+};
+
+/**
+ * Debounce function to limit the rate at which a function can be called.
+ * @param {Function} func The function to debounce.
+ * @param {number} delay The debounce delay in milliseconds.
+ * @returns {Function} The debounced function.
+ */
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => {
+      func.apply(this, args);
+    }, delay);
+  };
+};
+
+// Robust selectors for YouTube video cards
+const VIDEO_SELECTORS = [
+  'ytd-rich-item-renderer', // Home page, search results
+  'ytd-video-renderer', // Sidebar recommendations
+  'ytd-grid-video-renderer', // Channel pages
+  'ytd-compact-video-renderer', // Playlists
+];
+
+/**
+ * Processes the video cards found on the page.
+ */
+const processVideos = () => {
+  const videoElements = document.querySelectorAll(VIDEO_SELECTORS.join(', '));
+  videoElements.forEach((element) => {
+    const metadata = extractVideoMetadata(element);
+    if (metadata) {
+      console.log('Found video:', metadata);
+    }
+  });
+};
+
+// Create a MutationObserver to watch for changes in the DOM
+const observer = new MutationObserver(debounce(processVideos, 300));
+
+// Start observing the body for changes
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
+});
+
+// Initial run on page load
+processVideos();
