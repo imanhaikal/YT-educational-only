@@ -364,15 +364,15 @@ Gemini integration
 
 
 
-* [ ] ⬜ Ensure extension does not request extraneous permissions.
+* [x] ✅ Ensure extension does not request extraneous permissions.
 
-* [ ] ⬜ Document exactly what is sent to backend in privacy policy draft.
+* [x] ✅ Document exactly what is sent to backend in privacy policy draft.
 
-* [ ] ⬜ Implement PIN storage as salted hash and client-side verification.
+* [x] ✅ Implement PIN storage as salted hash and client-side verification.
 
-* [ ] ⬜ Add option to clear all local data and instructions for data deletion.
+* [x] ✅ Add option to clear all local data and instructions for data deletion.
 
-* [ ] ⬜ Backend: whitelist extension origin; require installation token if chosen.
+* [x] ✅ Backend: whitelist extension origin; require installation token if chosen.
 
 * AC: Privacy policy drafted; PIN not stored in plaintext.
 

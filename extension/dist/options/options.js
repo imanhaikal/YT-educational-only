@@ -15,6 +15,57 @@ const pinInput = document.getElementById('pin-input');
 const telemetryOptInCheckbox = document.getElementById('telemetry-opt-in');
 const clearDataButton = document.getElementById('clear-data');
 
+let isPinVerified = false;
+
+const setUiLocked = (isLocked) => {
+  const protectedElements = [
+    whitelistForm,
+    blacklistForm,
+    clearLogButton,
+    telemetryOptInCheckbox,
+    clearDataButton,
+  ];
+  protectedElements.forEach(el => {
+    el.disabled = isLocked;
+  });
+};
+
+const hashPin = async (pin, salt) => {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pin + salt);
+  const hash = await crypto.subtle.digest('SHA-256', data);
+  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
+};
+
+const verifyPin = async (pin) => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get('pin', async (result) => {
+      if (!result.pin) {
+        resolve(true); // No PIN set, so verification passes
+        return;
+      }
+      const { hash, salt } = result.pin;
+      const hashedPin = await hashPin(pin, salt);
+      resolve(hashedPin === hash);
+    });
+  });
+};
+
+const promptForPin = async () => {
+  const pin = prompt('Please enter your PIN to continue:');
+  if (pin === null) return false; // User cancelled the prompt
+  const isValid = await verifyPin(pin);
+  if (isValid) {
+    isPinVerified = true;
+    setUiLocked(false);
+    addToAuditLog('PIN verified successfully.');
+  } else {
+    alert('Incorrect PIN.');
+    addToAuditLog('Incorrect PIN entered.');
+  }
+  return isValid;
+};
+
 const renderList = (list, el, listName) => {
   el.innerHTML = '';
   list.forEach((item, index) => {
@@ -22,7 +73,8 @@ const renderList = (list, el, listName) => {
     li.textContent = item;
     const removeButton = document.createElement('button');
     removeButton.textContent = 'Remove';
-    removeButton.addEventListener('click', () => {
+    removeButton.addEventListener('click', async () => {
+      if (!isPinVerified && !(await promptForPin())) return;
       list.splice(index, 1);
       chrome.storage.local.set({ [listName]: list }, () => {
         renderList(list, el, listName);
@@ -56,14 +108,7 @@ const addToAuditLog = (message) => {
   });
 };
 
-const hashPin = async (pin, salt) => {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(pin + salt);
-  const hash = await crypto.subtle.digest('SHA-256', data);
-  return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2, '0')).join('');
-};
-
-chrome.storage.local.get(['whitelist', 'blacklist', 'auditLog', 'telemetryOptIn'], (result) => {
+chrome.storage.local.get(['whitelist', 'blacklist', 'auditLog', 'telemetryOptIn', 'pin'], (result) => {
   const whitelist = result.whitelist || [];
   const blacklist = result.blacklist || [];
   const auditLog = result.auditLog || [];
@@ -71,10 +116,16 @@ chrome.storage.local.get(['whitelist', 'blacklist', 'auditLog', 'telemetryOptIn'
   renderList(blacklist, blacklistEl, 'blacklist');
   renderAuditLog(auditLog);
   telemetryOptInCheckbox.checked = result.telemetryOptIn || false;
+
+  if (result.pin) {
+    setUiLocked(true);
+    promptForPin();
+  }
 });
 
-whitelistForm.addEventListener('submit', (e) => {
+whitelistForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!isPinVerified && !(await promptForPin())) return;
   const newItem = whitelistInput.value.trim();
   if (newItem) {
     chrome.storage.local.get('whitelist', (result) => {
@@ -89,8 +140,9 @@ whitelistForm.addEventListener('submit', (e) => {
   }
 });
 
-blacklistForm.addEventListener('submit', (e) => {
+blacklistForm.addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (!isPinVerified && !(await promptForPin())) return;
   const newItem = blacklistInput.value.trim();
   if (newItem) {
     chrome.storage.local.get('blacklist', (result) => {
@@ -105,7 +157,8 @@ blacklistForm.addEventListener('submit', (e) => {
   }
 });
 
-clearLogButton.addEventListener('click', () => {
+clearLogButton.addEventListener('click', async () => {
+  if (!isPinVerified && !(await promptForPin())) return;
   chrome.storage.local.set({ auditLog: [] }, () => {
     renderAuditLog([]);
     addToAuditLog('Audit log cleared');
@@ -116,24 +169,44 @@ pinForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const pin = pinInput.value;
   if (pin) {
-    const salt = crypto.getRandomValues(new Uint8Array(16));
-    const saltString = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
-    const hashedPin = await hashPin(pin, saltString);
-    chrome.storage.local.set({ pin: { hash: hashedPin, salt: saltString } }, () => {
-      addToAuditLog('PIN changed');
-      pinInput.value = '';
+    chrome.storage.local.get('pin', async (result) => {
+      if (result.pin) {
+        const oldPin = prompt('Enter your current PIN to change it:');
+        if (oldPin === null) return;
+        const isValid = await verifyPin(oldPin);
+        if (!isValid) {
+          alert('Incorrect PIN.');
+          addToAuditLog('Incorrect PIN entered when trying to change PIN.');
+          return;
+        }
+      }
+      const salt = crypto.getRandomValues(new Uint8Array(16));
+      const saltString = Array.from(salt).map(b => b.toString(16).padStart(2, '0')).join('');
+      const hashedPin = await hashPin(pin, saltString);
+      chrome.storage.local.set({ pin: { hash: hashedPin, salt: saltString } }, () => {
+        addToAuditLog('PIN changed');
+        pinInput.value = '';
+        alert('PIN changed successfully.');
+        isPinVerified = true; // Assume user is verified after changing PIN
+        setUiLocked(false);
+      });
     });
   }
 });
 
-telemetryOptInCheckbox.addEventListener('change', (e) => {
+telemetryOptInCheckbox.addEventListener('change', async (e) => {
+  if (!isPinVerified && !(await promptForPin())) {
+    e.target.checked = !e.target.checked; // Revert the checkbox
+    return;
+  }
   const telemetryOptIn = e.target.checked;
   chrome.storage.local.set({ telemetryOptIn }, () => {
     addToAuditLog(`Telemetry opt-in changed to ${telemetryOptIn}`);
   });
 });
 
-clearDataButton.addEventListener('click', () => {
+clearDataButton.addEventListener('click', async () => {
+  if (!isPinVerified && !(await promptForPin())) return;
   if (confirm('Are you sure you want to clear all local data? This action cannot be undone.')) {
     chrome.storage.local.clear(() => {
       addToAuditLog('All local data cleared');
