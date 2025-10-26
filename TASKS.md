@@ -326,11 +326,11 @@ Gemini integration
 
 
 
-* [ ] ⬜ Prepare 10-20 test prompts with expected outputs to sanity check Gemini responses.
+* [x] ✅ Prepare 10-20 test prompts with expected outputs to sanity check Gemini responses.
 
-* [ ] ⬜ Implement server-side JSON validator and fallbacks (malformed → `uncertain`).
+* [x] ✅ Implement server-side JSON validator and fallbacks (malformed → `uncertain`).
 
-* [ ] ⬜ Add unit tests/mocks for backend response parsing.
+* [x] ✅ Add unit tests/mocks for backend response parsing.
 
 * AC: Mocked model returns are parsed correctly and returned to extension.
 

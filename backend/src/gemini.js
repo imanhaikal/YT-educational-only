@@ -42,28 +42,34 @@ Return JSON only: {"label":"educational"|"non-educational"|"uncertain","confiden
   return prompt;
 };
 
-const validateResponse = (response) => {
-  if (!response || typeof response !== 'object') {
-    return { label: "uncertain", confidence: 0.0, reason: "Invalid response format." };
+const validateResponse = (responseText) => {
+  try {
+    const response = JSON.parse(responseText);
+
+    if (!response || typeof response !== 'object') {
+      return { label: "uncertain", confidence: 0.0, reason: "Invalid response format." };
+    }
+
+    const { label, confidence, reason } = response;
+
+    if (!label || !["educational", "non-educational", "uncertain"].includes(label)) {
+      return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing label." };
+    }
+
+    if (typeof confidence !== 'number') {
+      return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing confidence." };
+    }
+
+    const clampedConfidence = Math.max(0, Math.min(1, confidence));
+
+    if (!reason || typeof reason !== 'string') {
+      return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing reason." };
+    }
+
+    return { label, confidence: clampedConfidence, reason };
+  } catch {
+    return { label: "uncertain", confidence: 0.0, reason: "Malformed JSON response." };
   }
-
-  const { label, confidence, reason } = response;
-
-  if (!label || !["educational", "non-educational", "uncertain"].includes(label)) {
-    return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing label." };
-  }
-
-  if (typeof confidence !== 'number') {
-    return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing confidence." };
-  }
-
-  const clampedConfidence = Math.max(0, Math.min(1, confidence));
-
-  if (!reason || typeof reason !== 'string') {
-    return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing reason." };
-  }
-
-  return { label, confidence: clampedConfidence, reason };
 };
 
 const callGemini = async (prompt) => {
@@ -98,8 +104,7 @@ const callGemini = async (prompt) => {
                             const result = JSON.parse(body);
                             if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
                                 const text = result.candidates[0].content.parts[0].text;
-                                const parsedResponse = JSON.parse(text);
-                                resolve(validateResponse(parsedResponse));
+                                resolve(validateResponse(text));
                             } else {
                                 console.error("Invalid response structure from Gemini API:", body);
                                 resolve({ label: "uncertain", confidence: 0.0, reason: "Invalid response structure." });
@@ -130,4 +135,4 @@ const callGemini = async (prompt) => {
     }
 };
 
-module.exports = { buildPrompt, callGemini };
+module.exports = { buildPrompt, callGemini, validateResponse };
