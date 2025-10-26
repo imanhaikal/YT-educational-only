@@ -15,6 +15,7 @@ yarn-error.log*
 
 # Environment variables
 .env
+shaped-density-476314-i4-c78761555d13.json
 
 # OS-specific
 .DS_Store

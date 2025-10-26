@@ -1,6 +1,12 @@
+require('dotenv').config();
+console.log("GOOGLE_APPLICATION_CREDENTIALS:", process.env.GOOGLE_APPLICATION_CREDENTIALS);
 const express = require('express');
 const { buildPrompt, callGemini } = require('./src/gemini');
 const app = express();
+const morgan = require('morgan');
+
+app.use(express.json());
+app.use(morgan('tiny'));
 const port = 3000;
 
 const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'chrome-extension://andnjmfcpffbafhgjmnhfcklbgjblkih'];
@@ -20,10 +26,23 @@ app.use((req, res, next) => {
   }
 });
 
-app.use(express.json());
+const rateLimit = require('express-rate-limit');
+
+const limiter = rateLimit({
+	windowMs: 15 * 60 * 1000, // 15 minutes
+	max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+	standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+	lazy: false, // Disable lazy checking
+});
+
+app.use('/v1/classify', limiter);
 
 app.get('/', (req, res) => {
   res.send('Hello World!');
+});
+
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
 });
 
 app.post('/v1/classify', async (req, res) => {

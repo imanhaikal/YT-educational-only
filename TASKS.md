@@ -306,13 +306,13 @@ Gemini integration
 
 
 
-* [ ] ⬜ Store GEMINI API key in environment (do not commit).
+* [x] ⬜ Store GEMINI API key in environment (do not commit).
 
-* [ ] ⬜ Add basic rate limiting (per IP and per installation token).
+* [x] ⬜ Add basic rate limiting (per IP and per installation token).
 
-* [ ] ⬜ Add request logging (aggregate only; don't log raw titles by default).
+* [x] ⬜ Add request logging (aggregate only; don't log raw titles by default).
 
-* [ ] ⬜ Health endpoint and simple metrics endpoint (optional).
+* [x] ⬜ Health endpoint and simple metrics endpoint (optional).
 
 * AC: Rate-limiting blocks excessive requests; key not present in repo.
 

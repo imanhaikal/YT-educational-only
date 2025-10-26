@@ -1,9 +1,9 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleAuth } = require('google-auth-library');
+const https = require('https');
 
-// Access your API key as an environment variable (see "Set up your API key" page)
-// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-// For now, using a placeholder. Replace with your actual API key.
-const genAI = new GoogleGenerativeAI("YOUR_API_KEY");
+const auth = new GoogleAuth({
+  scopes: 'https://www.googleapis.com/auth/generative-language',
+});
 
 const truncateText = (videoMetadata) => {
   const { description, transcriptSnippet } = videoMetadata;
@@ -67,17 +67,67 @@ const validateResponse = (response) => {
 };
 
 const callGemini = async (prompt) => {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-lite"});
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-    const parsedResponse = JSON.parse(text);
-    return validateResponse(parsedResponse);
-  } catch (error) {
-    console.error("Error calling Gemini API:", error);
-    return { label: "uncertain", confidence: 0.0, reason: "Error processing request." };
-  }
+    try {
+        const client = await auth.getClient();
+        const accessToken = (await client.getAccessToken()).token;
+
+        const model = "gemini-2.5-flash-lite";
+        const options = {
+            hostname: 'generativelanguage.googleapis.com',
+            path: `/v1beta/models/${model}:generateContent`,
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const data = JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+        });
+
+        return new Promise((resolve) => {
+            const req = https.request(options, (res) => {
+                let body = '';
+                res.on('data', (chunk) => {
+                    body += chunk;
+                });
+                res.on('end', () => {
+                    if (res.statusCode >= 200 && res.statusCode < 300) {
+                        try {
+                            const result = JSON.parse(body);
+                            if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                                const text = result.candidates[0].content.parts[0].text;
+                                const parsedResponse = JSON.parse(text);
+                                resolve(validateResponse(parsedResponse));
+                            } else {
+                                console.error("Invalid response structure from Gemini API:", body);
+                                resolve({ label: "uncertain", confidence: 0.0, reason: "Invalid response structure." });
+                            }
+                        } catch (e) {
+                            console.error("Error parsing Gemini API response:", e);
+                            resolve({ label: "uncertain", confidence: 0.0, reason: "Error parsing response." });
+                        }
+                    } else {
+                        console.error("Error response from Gemini API:", body);
+                        resolve({ label: "uncertain", confidence: 0.0, reason: `HTTP error! status: ${res.statusCode}` });
+                    }
+                });
+            });
+
+            req.on('error', (error) => {
+                console.error("Error calling Gemini API:", error);
+                resolve({ label: "uncertain", confidence: 0.0, reason: "Error processing request." });
+            });
+
+            req.write(data);
+            req.end();
+        });
+
+    } catch (error) {
+        console.error("Error getting access token:", error);
+        return { label: "uncertain", confidence: 0.0, reason: "Error getting access token." };
+    }
 };
 
 module.exports = { buildPrompt, callGemini };
