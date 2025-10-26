@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YouTube Kid-Filter Options</title>
+  <link rel="stylesheet" type="text/css" href="../styles/main.css">
+</head>
+<body>
+  <h1>YouTube Kid-Filter Options</h1>
+
+  <h2>Whitelist</h2>
+  <form id="whitelist-form">
+    <input type="text" id="whitelist-input" placeholder="Enter channel ID or video URL">
+    <button type="submit">Add to Whitelist</button>
+  </form>
+  <ul id="whitelist"></ul>
+
+  <h2>Blacklist</h2>
+  <form id="blacklist-form">
+    <input type="text" id="blacklist-input" placeholder="Enter channel ID or video URL">
+    <button type="submit">Add to Blacklist</button>
+  </form>
+  <ul id="blacklist"></ul>
+
+  <h2>PIN</h2>
+  <form id="pin-form">
+    <input type="password" id="pin-input" placeholder="Enter new PIN">
+    <button type="submit">Set/Change PIN</button>
+  </form>
+  <p>Warning: Use a strong PIN to protect the settings.</p>
+
+  <h2>Data Management</h2>
+  <label>
+    <input type="checkbox" id="telemetry-opt-in">
+    Opt-in to anonymous telemetry to help improve the extension.
+  </label>
+  <br>
+  <button id="clear-data">Clear Local Data</button>
+
+  <h2>Audit Log</h2>
+  <button id="clear-log">Clear Log</button>
+  <ul id="audit-log"></ul>
+
+  <script src="../options.js"></script>
+</body>
+</html>

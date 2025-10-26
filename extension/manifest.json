@@ -22,5 +22,6 @@
   ],
   "action": {
     "default_popup": "popup.html"
-  }
+  },
+  "options_page": "options/options.html"
 }

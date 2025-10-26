@@ -228,15 +228,15 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ Whitelist CRUD (add channel by ID/name, add video by URL)
+\* \[x] ✅ Whitelist CRUD (add channel by ID/name, add video by URL)
 
-\* \[ ] ⬜ Blacklist CRUD
+\* \[x] ✅ Blacklist CRUD
 
-\* \[ ] ⬜ Audit log view (last 50 entries, clear button)
+\* \[x] ✅ Audit log view (last 50 entries, clear button)
 
-\* \[ ] ⬜ PIN set/change flow (store salted hash; display warning about strength)
+\* \[x] ✅ PIN set/change flow (store salted hash; display warning about strength)
 
-\* \[ ] ⬜ Telemetry opt-in toggle + Clear local data button
+\* \[x] ✅ Telemetry opt-in toggle + Clear local data button
 
 \* AC: Options persist to `chrome.storage.local` and reflect in content behavior.
 
