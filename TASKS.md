@@ -90,15 +90,15 @@ Below is a detailed, prioritized checklist of tasks for the \*\*YouTube Kid-Filt
 
 
 
-\* \[ ] ⬜ `src/content-script/` — content script entry
+\* \[x] ⬜ `src/content-script/` — content script entry
 
-\* \[ ] ⬜ `src/service-worker/` — background/service worker
+\* \[x] ⬜ `src/service-worker/` — background/service worker
 
-\* \[ ] ⬜ `src/popup/` — popup HTML + JS
+\* \[x] ⬜ `src/popup/` — popup HTML + JS
 
-\* \[ ] ⬜ `src/options/` — options UI
+\* \[x] ⬜ `src/options/` — options UI
 
-\* \[ ] ⬜ `src/styles/` — shared CSS (scoped classes)
+\* \[x] ⬜ `src/styles/` — shared CSS (scoped classes)
 
 \* AC: Files present, build produces `dist/` ready to load.
 
