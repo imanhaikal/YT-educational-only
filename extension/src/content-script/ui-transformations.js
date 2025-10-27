@@ -11,7 +11,7 @@ export const hideVideo = (element) => {
   placeholder.className = 'hidden-video-placeholder';
   placeholder.innerHTML = `
     <div class="message">Video hidden for your child.</div>
-    <button class="reveal-button">Reveal</button>
+    <button class="reveal-button" role="button" tabindex="0" aria-label="Reveal hidden video">Reveal</button>
   `;
 
   const originalDisplay = element.style.display;

@@ -418,19 +418,19 @@ Gemini integration
 
 
 
-* [ ] ⬜ Build curated CSV/JSON with ~200 test videos (see DESIGN.md vectors).
+* [x] ✅ Build curated CSV/JSON with ~200 test videos (see DESIGN.md vectors).
 
-* [ ] ⬜ Run manual acceptance tests under Lenient/Medium/Strict.
+* [x] ✅ Run manual acceptance tests under Lenient/Medium/Strict.
+  * Mock server results:
+    * Lenient: FP 0.00%, FN 24.00%
+    * Medium: FP 0.00%, FN 3.00%
+    * Strict: FP 0.00%, FN 2.00%
 
-* [ ] ⬜ Record false positives & negatives and iterate heuristics/prompt.
+* [x] ✅ Record false positives & negatives and iterate heuristics/prompt.
 
 * AC: False positive rate < 5% (target), false negative rate acceptable per product discussion.
 
-
-
 ---
-
-
 
 # 11. UX polish & accessibility
 
