@@ -2,7 +2,7 @@ import moment from 'moment';
 
 const CACHE_TTL = 24 * 3600 * 1000; // 24 hours in milliseconds
 const MAX_CACHE_ENTRIES = 100;
-const BACKEND_URL = 'http://localhost:3000/v1/classify';
+const BACKEND_URL = 'https://yt-educational-only.vercel.app/v1/classify';
 const BACKOFF_DURATION = 5 * 60 * 1000; // 5 minutes
 const AUDIT_LOG_MAX_ENTRIES = 50;
 const YOUTUBE_API_KEY = 'AIzaSyDuTZCTPbJl0h_DufU7tzP5j15mbdQSsfk'; // TODO: Replace with your YouTube Data API key
