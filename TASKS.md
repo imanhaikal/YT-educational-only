@@ -406,9 +406,9 @@ Gemini integration
 
 
 
-* [ ] ⬜ Mock backend to verify end-to-end content script ↔ service worker ↔ backend flows.
+* [x] ✅ Mock backend to verify end-to-end content script ↔ service worker ↔ backend flows.
 
-* [ ] ⬜ Puppeteer/Playwright tests to load YouTube pages and assert DOM modifications for test vectors.
+* [x] ✅ Puppeteer/Playwright tests to load YouTube pages and assert DOM modifications for test vectors.
 
 * AC: E2E smoke tests pass for major flows (home, search, watch recs).
 
