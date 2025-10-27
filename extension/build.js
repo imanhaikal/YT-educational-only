@@ -25,22 +25,28 @@ function copy(source, destination) {
   }
 }
 
-// Define what to copy
-const assets = [
-  'manifest.json',
-  'popup.html',
-  'popup.css',
-  { from: 'src/options', to: 'options' },
-  { from: 'src/styles', to: 'styles' },
-  { from: 'icons', to: 'icons' },
-];
+const manifest = JSON.parse(fs.readFileSync('manifest.json', 'utf-8'));
+manifest.icons = {
+  "16": "icon16.png",
+  "32": "icon32.png",
+  "48": "icon48.png",
+  "128": "icon128.png"
+};
+fs.writeFileSync(path.join(distDir, 'manifest.json'), JSON.stringify(manifest, null, 2));
+console.log(`Copied and modified 'manifest.json' to '${path.join(distDir, 'manifest.json')}'`);
 
-// Perform the copy
-assets.forEach(asset => {
-  const sourcePath = typeof asset === 'string' ? asset : asset.from;
-  const destPath = path.join(distDir, typeof asset === 'string' ? asset : asset.to);
-  copy(sourcePath, destPath);
-  console.log(`Copied '${sourcePath}' to '${destPath}'`);
+copy('popup.html', path.join(distDir, 'popup.html'));
+console.log(`Copied 'popup.html' to '${path.join(distDir, 'popup.html')}'`);
+copy('popup.css', path.join(distDir, 'popup.css'));
+console.log(`Copied 'popup.css' to '${path.join(distDir, 'popup.css')}'`);
+copy('src/options', path.join(distDir, 'options'));
+console.log(`Copied 'src/options' to '${path.join(distDir, 'options')}'`);
+copy('src/styles', path.join(distDir, 'styles'));
+console.log(`Copied 'src/styles' to '${path.join(distDir, 'styles')}'`);
+
+fs.readdirSync('icons').forEach(file => {
+  copy(path.join('icons', file), path.join(distDir, file));
+  console.log(`Copied '${path.join('icons', file)}' to '${path.join(distDir, file)}'`);
 });
 
 
