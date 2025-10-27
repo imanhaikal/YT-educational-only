@@ -390,13 +390,13 @@ Gemini integration
 
 
 
-* [ ] ⬜ Heuristics functions
+* [x] ✅ Heuristics functions
 
-* [ ] ⬜ Video ID extraction
+* [x] ✅ Video ID extraction
 
-* [ ] ⬜ Storage utils (read/write/cache TTL)
+* [x] ✅ Storage utils (read/write/cache TTL)
 
-* [ ] ⬜ Prompt builder & server parsing logic
+* [x] ✅ Prompt builder & server parsing logic
 
 * AC: Unit test coverage for core utils >= targeted threshold (team-defined).
 
