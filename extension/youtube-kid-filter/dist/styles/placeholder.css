@@ -1,0 +1,75 @@
+.hidden-video-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background-color: #212121;
+    border: 1px solid #383838;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.hidden-video-placeholder .message {
+    font-size: 1.2em;
+    color: #AAAAAA;
+}
+
+.hidden-video-placeholder .reveal-button {
+    margin-left: 10px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 18px;
+    background-color: #383838;
+    color: #FFFFFF;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.hidden-video-placeholder .reveal-button:hover,
+.hidden-video-placeholder .reveal-button:focus {
+    background-color: #545454;
+    outline: none;
+}
+
+.hidden-video-placeholder .tooltip {
+    position: relative;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+.hidden-video-placeholder .tooltip .tooltip-icon {
+    cursor: pointer;
+    font-weight: bold;
+    border: 1px solid #545454;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    text-align: center;
+    line-height: 20px;
+    color: #AAAAAA;
+}
+
+.hidden-video-placeholder .tooltip .tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background-color: #383838;
+    color: #FFFFFF;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -100px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.hidden-video-placeholder .tooltip:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+}

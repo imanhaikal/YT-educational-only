@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>YouTube Kid-Filter</title>
+  <link rel="stylesheet" type="text/css" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>YouTube Kid-Filter</h1>
+    <div class="setting">
+      <label for="enabled">Enable Extension</label>
+      <input type="checkbox" id="enabled" checked>
+    </div>
+    <div class="setting">
+      <label for="strictness">Strictness Level</label>
+      <select id="strictness">
+        <option value="lenient">Lenient</option>
+        <option value="medium">Medium</option>
+        <option value="strict">Strict</option>
+      </select>
+    </div>
+    <div class="actions">
+      <button id="whitelist">Whitelist Channel</button>
+      <button id="blacklist">Blacklist Channel</button>
+    </div>
+    <div class="info">
+      <p>Hidden Videos on this page: <span id="hidden-count">0</span></p>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
