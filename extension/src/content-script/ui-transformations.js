@@ -6,11 +6,15 @@
  * Hides a video element by replacing it with a placeholder.
  * @param {HTMLElement} element - The video element to hide.
  */
-export const hideVideo = (element) => {
+export const hideVideo = (element, reason, confidence) => {
   const placeholder = document.createElement('div');
   placeholder.className = 'hidden-video-placeholder';
   placeholder.innerHTML = `
     <div class="message">Video hidden for your child.</div>
+    <div class="tooltip">
+      <span class="tooltip-icon">?</span>
+      <span class="tooltip-text">Reason: ${reason} (Confidence: ${confidence})</span>
+    </div>
     <button class="reveal-button" role="button" tabindex="0" aria-label="Reveal hidden video">Reveal</button>
   `;
 

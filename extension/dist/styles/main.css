@@ -1,0 +1,58 @@
+body {
+  font-family: sans-serif;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #181818;
+  color: #FFFFFF;
+}
+
+h1, h2 {
+  text-align: center;
+  color: #FFFFFF;
+}
+
+form {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+input[type="text"], input[type="password"] {
+  flex-grow: 1;
+  padding: 8px;
+  font-size: 16px;
+  background-color: #212121;
+  color: #FFFFFF;
+  border: 1px solid #545454;
+}
+
+button {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: 1px solid #545454;
+  border-radius: 5px;
+  background-color: #383838;
+  color: #FFFFFF;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #545454;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #383838;
+}
+
+label {
+  color: #AAAAAA;
+}

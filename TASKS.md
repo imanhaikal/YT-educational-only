@@ -436,11 +436,13 @@ Gemini integration
 
 
 
-* [ ] ⬜ Ensure placeholder and reveal buttons accessible (aria-labels, keyboard focus).
+* [x] ✅ Ensure placeholder and reveal buttons accessible (aria-labels, keyboard focus).
 
-* [ ] ⬜ Add short “Why?” tooltip showing classifier reason and confidence.
+* [x] ✅ Add short “Why?” tooltip showing classifier reason and confidence.
 
-* [ ] ⬜ Ensure options/popup responsive and readable.
+* [x] ✅ Ensure options/popup responsive and readable.
+
+* [x] ✅ Make the design blend in with YouTube's dark mode UI.
 
 * AC: Basic accessibility checks pass (keyboard navigable, buttons have aria labels).
 
