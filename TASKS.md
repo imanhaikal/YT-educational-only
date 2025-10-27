@@ -456,11 +456,11 @@ Gemini integration
 
 
 
-* [ ] ⬜ Add basic logging/metrics (request count, 4xx/5xx, avg latency).
+* [x] ✅ Add basic logging/metrics (request count, 4xx/5xx, avg latency).
 
-* [ ] ⬜ Add alerting for high error rates.
+* [x] ✅ Add alerting for high error rates.
 
-* [ ] ⬜ Prepare simple runbook for restarting backend & rolling back.
+* [x] ✅ Prepare simple runbook for restarting backend & rolling back.
 
 * AC: Metrics visible in chosen monitoring tool and runbook created.
 

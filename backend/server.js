@@ -4,6 +4,10 @@ const express = require('express');
 const { classifyVideosInBatch } = require('./src/gemini');
 const app = express();
 const morgan = require('morgan');
+const promBundle = require('express-prom-bundle');
+
+const metricsMiddleware = promBundle({includeMethod: true, includePath: true});
+app.use(metricsMiddleware);
 
 app.use(express.json());
 app.use(morgan('tiny'));
