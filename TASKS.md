@@ -474,13 +474,13 @@ Gemini integration
 
 
 
-* [ ] ⬜ Write privacy policy describing text-only data sent to backend, storage, opt-in telemetry, and deletion instructions.
+* [x] ✅ Write privacy policy describing text-only data sent to backend, storage, opt-in telemetry, and deletion instructions.
 
-* [ ] ] Write developer README for extension and backend with setup, build, deploy steps.
+* [x] ✅ Write developer README for extension and backend with setup, build, deploy steps.
 
-* [ ] ⬜ Prepare Chrome Web Store listing copy (short + long descriptions) including privacy summary.
+* [x] ✅ Prepare Chrome Web Store listing copy (short + long descriptions) including privacy summary.
 
-* [ ] ⬜ Prepare FAQ for parents (how reveal/whitelist works, PIN).
+* [x] ✅ Prepare FAQ for parents (how reveal/whitelist works, PIN).
 
 * AC: All docs ready for store submission.
 
