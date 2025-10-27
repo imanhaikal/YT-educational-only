@@ -6,19 +6,19 @@ const auth = new GoogleAuth({
 });
 
 const truncateText = (videoMetadata) => {
-  const { description, transcriptSnippet } = videoMetadata;
-  const combinedLength = (description?.length || 0) + (transcriptSnippet?.length || 0);
+  const { descriptionSnippet, transcriptSnippet } = videoMetadata;
+  const combinedLength = (descriptionSnippet?.length || 0) + (transcriptSnippet?.length || 0);
 
   if (combinedLength > 4000) {
     const remainingLength = 4000;
-    const descriptionLength = description?.length || 0;
+    const descriptionLength = descriptionSnippet?.length || 0;
     const transcriptSnippetLength = transcriptSnippet?.length || 0;
 
     if (transcriptSnippetLength > remainingLength) {
       videoMetadata.transcriptSnippet = transcriptSnippet.slice(0, remainingLength);
-      videoMetadata.description = "";
+      videoMetadata.descriptionSnippet = "";
     } else if (descriptionLength > remainingLength - transcriptSnippetLength) {
-      videoMetadata.description = description.slice(0, remainingLength - transcriptSnippetLength);
+      videoMetadata.descriptionSnippet = descriptionSnippet.slice(0, remainingLength - transcriptSnippetLength);
     }
   }
 
@@ -26,49 +26,82 @@ const truncateText = (videoMetadata) => {
 }
 
 const buildPrompt = (videoMetadata) => {
-  const { title, description, channelName, transcriptSnippet } = truncateText(videoMetadata);
+  const { title, descriptionSnippet, channelName, transcriptSnippet, isEducationalChannel } = truncateText(videoMetadata);
 
-  const prompt = `Classify the following YouTube video as "educational", "non-educational", or "uncertain" based ONLY on these fields:
+  let prompt = `Please classify the following YouTube video as "educational" or "non-educational" based on the provided metadata. Your focus should be on identifying content that offers intellectual value, promotes learning, or teaches a skill.
 
-{"title":"${title}", "description":"${description}", "channel":"${channelName}", "transcript_snippet":"${transcriptSnippet}"}
+  **Video Metadata:**
+  * **Title:** "${title}"
+  * **Channel:** "${channelName}"
+  * **Description:** "${descriptionSnippet}"
+  * **Transcript Snippet:** "${transcriptSnippet}"
 
-Rules:
+  **Classification Guidelines:**
 
-- "educational": teaches facts/skills/concepts; tutorials, lectures, explainer content.
-- "non-educational": entertainment-only (pranks, mukbang, reaction, gameplay with no instruction), clickbait, sensationalist, ASMR, challenges.
+  *   **Educational:** Content that is primarily designed to teach, inform, or develop a skill. This includes, but is not limited to:
+      *   Documentaries and educational series (e.g., from channels like TED, Kurzgesagt, SmarterEveryDay).
+      *   Tutorials and how-to guides (e.g., coding tutorials, DIY projects, academic lectures).
+      *   In-depth analyses of current events, history, science, or art.
+      *   Content that encourages critical thinking and intellectual curiosity.
 
-Return JSON only: {"label":"educational"|"non-educational"|"uncertain","confidence":0.00-1.00,"reason":"short justification, <=20 words"}`;
+  *   **Non-Educational:** Content that is primarily for entertainment and lacks significant intellectual value. This includes:
+      *   Pranks, challenges, and reaction videos.
+      *   Let's Plays and gameplay videos without instructional commentary.
+      *   Vlogs, "day in the life" videos, and celebrity gossip.
+      *   Music videos, ASMR, and other content designed for passive consumption.
 
+  When in doubt, lean towards classifying a video as "non-educational" to err on the side of caution.
+  `
+
+  if (isEducationalChannel) {
+    prompt += `
+  **Important Note:** This video is from a known educational channel. Please classify it as "educational".
+    `
+  }
+  
+  prompt += `
+  **Output Format:**
+
+  Return a JSON object with the following structure:
+  {
+    "label": "educational" | "non-educational",
+    "confidence": 0.00-1.00,
+    "reason": "A brief justification for your classification (under 20 words)."
+  }
+  `
   return prompt;
 };
 
 const validateResponse = (responseText) => {
+  console.log('Gemini API response:', responseText);
   try {
-    const response = JSON.parse(responseText);
+    const jsonMatch = responseText.match(/```json\n([\s\S]*?)\n```/);
+    const json = jsonMatch ? jsonMatch[1] : responseText;
+    const response = JSON.parse(json);
 
     if (!response || typeof response !== 'object') {
-      return { label: "uncertain", confidence: 0.0, reason: "Invalid response format." };
+      return { label: "non-educational", confidence: 0.0, reason: "Invalid response format." };
     }
 
     const { label, confidence, reason } = response;
 
-    if (!label || !["educational", "non-educational", "uncertain"].includes(label)) {
-      return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing label." };
+    if (!label || !["educational", "non-educational"].includes(label)) {
+      return { label: "non-educational", confidence: 0.0, reason: "Invalid or missing label." };
     }
 
     if (typeof confidence !== 'number') {
-      return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing confidence." };
+      return { label: "non-educational", confidence: 0.0, reason: "Invalid or missing confidence." };
     }
 
     const clampedConfidence = Math.max(0, Math.min(1, confidence));
 
     if (!reason || typeof reason !== 'string') {
-      return { label: "uncertain", confidence: 0.0, reason: "Invalid or missing reason." };
+      return { label: "non-educational", confidence: 0.0, reason: "Invalid or missing reason." };
     }
 
     return { label, confidence: clampedConfidence, reason };
   } catch {
-    return { label: "uncertain", confidence: 0.0, reason: "Malformed JSON response." };
+    return { label: "non-educational", confidence: 0.0, reason: "Malformed JSON response." };
   }
 };
 
@@ -77,7 +110,7 @@ const callGemini = async (prompt) => {
         const client = await auth.getClient();
         const accessToken = (await client.getAccessToken()).token;
 
-        const model = "gemini-2.5-flash-lite";
+        const model = "gemini-flash-lite-latest";
         const options = {
             hostname: 'generativelanguage.googleapis.com',
             path: `/v1beta/models/${model}:generateContent`,
@@ -107,22 +140,22 @@ const callGemini = async (prompt) => {
                                 resolve(validateResponse(text));
                             } else {
                                 console.error("Invalid response structure from Gemini API:", body);
-                                resolve({ label: "uncertain", confidence: 0.0, reason: "Invalid response structure." });
+                                resolve({ label: "non-educational", confidence: 0.0, reason: "Invalid response structure." });
                             }
                         } catch (e) {
                             console.error("Error parsing Gemini API response:", e);
-                            resolve({ label: "uncertain", confidence: 0.0, reason: "Error parsing response." });
+                            resolve({ label: "non-educational", confidence: 0.0, reason: "Error parsing response." });
                         }
                     } else {
                         console.error("Error response from Gemini API:", body);
-                        resolve({ label: "uncertain", confidence: 0.0, reason: `HTTP error! status: ${res.statusCode}` });
+                        resolve({ label: "non-educational", confidence: 0.0, reason: `HTTP error! status: ${res.statusCode}` });
                     }
                 });
             });
 
             req.on('error', (error) => {
                 console.error("Error calling Gemini API:", error);
-                resolve({ label: "uncertain", confidence: 0.0, reason: "Error processing request." });
+                resolve({ label: "non-educational", confidence: 0.0, reason: "Error processing request." });
             });
 
             req.write(data);
@@ -131,7 +164,7 @@ const callGemini = async (prompt) => {
 
     } catch (error) {
         console.error("Error getting access token:", error);
-        return { label: "uncertain", confidence: 0.0, reason: "Error getting access token." };
+        return { label: "non-educational", confidence: 0.0, reason: "Error getting access token." };
     }
 };
 

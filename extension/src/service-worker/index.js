@@ -1,8 +1,11 @@
+import moment from 'moment';
+
 const CACHE_TTL = 24 * 3600 * 1000; // 24 hours in milliseconds
 const MAX_CACHE_ENTRIES = 100;
 const BACKEND_URL = 'http://localhost:3000/v1/classify';
 const BACKOFF_DURATION = 5 * 60 * 1000; // 5 minutes
 const AUDIT_LOG_MAX_ENTRIES = 50;
+const YOUTUBE_API_KEY = 'AIzaSyDuTZCTPbJl0h_DufU7tzP5j15mbdQSsfk'; // TODO: Replace with your YouTube Data API key
 
 async function addAuditLog(message) {
     const { auditLog = [] } = await new Promise(resolve => chrome.storage.local.get('auditLog', resolve));
@@ -26,6 +29,34 @@ chrome.runtime.onInstalled.addListener(() => {
   });
 });
 
+async function fetchVideoMetadata(videoId) {
+  const url = `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${YOUTUBE_API_KEY}`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`YouTube API request failed with status: ${response.status}`);
+    }
+    const data = await response.json();
+    if (data.items && data.items.length > 0) {
+      const item = data.items[0];
+      const duration = item.contentDetails.duration;
+      const durationSec = duration ? moment.duration(duration).asSeconds() : 0;
+      return {
+        videoId: item.id,
+        title: item.snippet.title,
+        descriptionSnippet: item.snippet.description.substring(0, 200),
+        channelName: item.snippet.channelTitle,
+        channelId: item.snippet.channelId,
+        durationSec,
+      };
+    }
+  } catch (error) {
+    console.error('Error fetching video metadata:', error);
+    addAuditLog(`Failed to fetch metadata for video ${videoId}. Error: ${error.message}`);
+  }
+  return null;
+}
+
 async function classifyVideos(videos) {
     const { installationId, lastBackendFailTs } = await new Promise(resolve => chrome.storage.local.get(['installationId', 'lastBackendFailTs'], resolve));
 
@@ -35,6 +66,8 @@ async function classifyVideos(videos) {
         addAuditLog(message);
         return null;
     }
+
+    console.log('Sending videos to backend:', videos);
 
     try {
         const response = await fetch(BACKEND_URL, {
@@ -121,11 +154,11 @@ chrome.alarms.onAlarm.addListener(async (alarm) => {
 });
 
 let videoQueue = new Map();
-const BATCH_DELAY_MINUTES = 10 / 60; // 10 seconds
+const BATCH_DELAY_MINUTES = 0; 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.type === 'CLASSIFY_VIDEO') {
-        const { videoId, metadata } = request;
+        const { videoId } = request;
         const cacheKey = `video-classification-${videoId}`;
 
         (async () => {
@@ -136,6 +169,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 console.log(message);
                 addAuditLog(message);
                 sendResponse({ classification: cachedItem.classification });
+                return;
+            }
+
+            const metadata = await fetchVideoMetadata(videoId);
+            if (!metadata) {
+                sendResponse({ error: 'Failed to fetch metadata' });
                 return;
             }
 

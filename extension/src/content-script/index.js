@@ -26,50 +26,6 @@ const extractVideoId = (node) => {
 };
 
 /**
- * Extracts metadata from a video card element.
- * @param {HTMLElement} videoElement The video card element.
- * @returns {object|null} An object with the video metadata or null if the ID can't be extracted.
- */
-const extractVideoMetadata = (videoElement) => {
-  const videoId = extractVideoId(videoElement);
-  if (!videoId) {
-    return null;
-  }
-
-  const title = videoElement.querySelector('#video-title')?.textContent.trim() || null;
-  const descriptionSnippet = videoElement.querySelector('#description-text')?.textContent.trim() || null;
-  const channelName = videoElement.querySelector('.ytd-channel-name a')?.textContent.trim() || null;
-  const channelLink = videoElement.querySelector('.ytd-channel-name a')?.href;
-  const channelId = channelLink ? new URL(channelLink).pathname.split('/').pop() : null;
-
-  const durationElement = videoElement.querySelector('.ytd-thumbnail-overlay-time-status-renderer');
-  const durationLabel = durationElement?.getAttribute('aria-label') || '';
-  const durationSec = durationLabel
-    .split(' ')
-    .reduce((total, part) => {
-      const value = parseInt(part, 10);
-      if (isNaN(value)) return total;
-      if (part.includes('hour')) {
-        total += value * 3600;
-      } else if (part.includes('minute')) {
-        total += value * 60;
-      } else if (part.includes('second')) {
-        total += value;
-      }
-      return total;
-    }, 0);
-
-  return {
-    videoId,
-    title,
-    descriptionSnippet,
-    channelName,
-    channelId,
-    durationSec,
-  };
-};
-
-/**
  * Debounce function to limit the rate at which a function can be called.
  * @param {Function} func The function to debounce.
  * @param {number} delay The debounce delay in milliseconds.
@@ -106,28 +62,20 @@ const processVideos = () => {
     }
     element.dataset.processed = true;
 
-    const metadata = extractVideoMetadata(element);
-    if (metadata && metadata.videoId) {
+    const videoId = extractVideoId(element);
+    if (videoId) {
       // Store videoId on the element for later retrieval
-      element.dataset.videoId = metadata.videoId;
+      element.dataset.videoId = videoId;
       chrome.runtime.sendMessage(
-        { type: 'CLASSIFY_VIDEO', videoId: metadata.videoId, metadata },
+        { type: 'CLASSIFY_VIDEO', videoId },
         (response) => {
           if (chrome.runtime.lastError) {
             console.error('Error sending message:', chrome.runtime.lastError.message);
             return;
           }
-          if (response && response.classification) {
-            // This handles immediate responses from cache
-            if (response.classification !== 'educational') {
-              console.log(`Hiding video ${metadata.videoId} classified as ${response.classification}`);
-              hideVideo(element);
-              hiddenVideoCount++;
-              chrome.runtime.sendMessage({ type: 'hidden_video_count', count: hiddenVideoCount });
-            }
-          } else if (response && response.status === 'queued') {
+          if (response && response.status === 'queued') {
             // Video is queued for batch processing, do nothing for now
-            console.log(`Video ${metadata.videoId} is queued for classification.`);
+            console.log(`Video ${videoId} is queued for classification.`);
           }
         }
       );
@@ -152,10 +100,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (classifications) {
       for (const videoId in classifications) {
         const classification = classifications[videoId];
-        if (classification !== 'educational') {
+        console.log(`Received classification for video ${videoId}:`, classification);
+        if (classification.label !== 'educational') {
           const videoElement = document.querySelector(`[data-video-id="${videoId}"]`);
           if (videoElement && !videoElement.dataset.hidden) {
-            console.log(`Hiding video ${videoId} classified as ${classification}`);
+            console.log(`Hiding video ${videoId} classified as ${classification.label}`);
             hideVideo(videoElement);
             videoElement.dataset.hidden = true; // Mark as hidden to avoid recounting
             hiddenVideoCount++;

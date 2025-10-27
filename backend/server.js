@@ -9,21 +9,15 @@ app.use(express.json());
 app.use(morgan('tiny'));
 const port = 3000;
 
-const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : ['http://localhost:3000', 'chrome-extension://andnjmfcpffbafhgjmnhfcklbgjblkih'];
-
 app.use((req, res, next) => {
   const origin = req.get('Origin');
-  if (ALLOWED_ORIGINS.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-    if (req.method === 'OPTIONS') {
-      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-      return res.status(204).end();
-    }
-    next();
-  } else {
-    return res.status(403).json({ message: 'Forbidden' });
+  res.setHeader('Access-Control-Allow-Origin', origin || '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  if (req.method === 'OPTIONS') {
+    return res.status(204).end();
   }
+  next();
 });
 
 const rateLimit = require('express-rate-limit');
