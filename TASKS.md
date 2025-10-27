@@ -422,9 +422,9 @@ Gemini integration
 
 * [x] ✅ Run manual acceptance tests under Lenient/Medium/Strict.
   * Mock server results:
-    * Lenient: FP 0.00%, FN 24.00%
+    * Lenient: FP 0.00%, FN 20.00%
     * Medium: FP 0.00%, FN 3.00%
-    * Strict: FP 0.00%, FN 2.00%
+    * Strict: FP 0.00%, FN 3.00%
 
 * [x] ✅ Record false positives & negatives and iterate heuristics/prompt.
 
@@ -494,15 +494,15 @@ Gemini integration
 
 
 
-* [ ] ⬜ Final QA pass with test vector
+* [x] ✅ Final QA pass with test vector
 
-* [ ] ⬜ Create extension icon assets and images for store
+* [x] ✅ Create extension icon assets and images for store
 
-* [ ] ⬜ Pack extension and produce `.zip` for Chrome Web Store
+* [x] ✅ Pack extension and produce `.zip` for Chrome Web Store
 
-* [ ] ⬜ Ensure privacy policy URL included in store listing
+* [x] ✅ Ensure privacy policy URL included in store listing
 
-* [ ] ⬜ Backend deployed to production with env vars set (`GEMINI_API_KEY`, allowed origins)
+* [x] ✅ Backend deployed to production with env vars set (`GEMINI_API_KEY`, allowed origins)
 
 * [ ] ⬜ Monitor initial rollout and be prepared to quick fix selector regressions
 

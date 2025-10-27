@@ -32,6 +32,7 @@ const assets = [
   'popup.css',
   { from: 'src/options', to: 'options' },
   { from: 'src/styles', to: 'styles' },
+  { from: 'icons', to: 'icons' },
 ];
 
 // Perform the copy

@@ -2,8 +2,9 @@ import globals from "globals";
 import js from "@eslint/js";
 
 export default [
-  js.configs.recommended,
   {
+    files: ["**/*.js"],
+    ignores: ["dist/**", "node_modules/**"],
     languageOptions: {
       globals: {
         ...globals.browser,
@@ -11,5 +12,6 @@ export default [
         ...globals.jest,
       },
     },
+    rules: js.configs.recommended.rules,
   },
 ];
